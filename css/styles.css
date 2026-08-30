@@ -630,6 +630,7 @@ body.profile-active .workspace > main > .tab-panel p:last-child {
 
 body.profile-active .workspace > main > .tab-panel .profile-subscription-meta {
   display: block;
+  color: var(--text);
   font-size: var(--font-sm);
   line-height: 1.5;
 }
