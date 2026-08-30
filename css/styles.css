@@ -184,6 +184,7 @@ code {
 .access-lock-card h2 { margin: 0; color: var(--text); font-size: 1.25rem; }
 .access-lock-card p { margin: .75rem 0 1.25rem; color: var(--muted); line-height: 1.4; }
 .access-lock-card .btn { display: inline-flex; text-decoration: none; }
+body.access-locked #generate-btn { display: none; }
 
 .sidebar {
   position: sticky;
@@ -501,7 +502,7 @@ body.login-active main { max-width: none; }
 .login-error { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; color: #b45320; font-size: var(--font-sm); font-weight: 600; }
 .login-error[hidden], .login-register-btn[hidden] { display: none; }
 .login-error .lucide { width: 18px; height: 18px; flex-shrink: 0; }
-.login-register-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: var(--radius-pill); background: var(--soft-2); color: var(--text); font-size: var(--font-sm); font-weight: 600; }
+.login-register-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 16px; padding: 14px; border: 0; border-radius: var(--radius-pill); background: var(--blue); color: #fff; font-size: var(--font-sm); font-weight: 600; }
 .login-register-btn .lucide { width: 18px; height: 18px; }
 .login-code-step[hidden] { display: none; }
 .login-code-step .login-icon { margin-top: var(--space-6); }
