@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Оформление доступа — Genvito</title>
+<link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="payment-active">
+<div class="neo-shell">
+  <header class="neo-top-nav"><div class="neo-header-inner"><a class="neo-logo" href="/" aria-label="Neo"><strong>» neo</strong></a><nav class="top-tabs"><a class="top-tab" href="/">Кабинет</a><a class="top-tab active" href="/pages/payment.html">Оплата</a></nav></div></header>
+  <main class="checkout-page">
+    <div class="checkout-heading"><h2>Доступ к генератору объявлений</h2><p>Выберите подходящий тариф для работы с сервисом</p><div class="feature-pills"><span><i data-lucide="sparkles" aria-hidden="true"></i>Генерация объявлений</span><span><i data-lucide="map-pin" aria-hidden="true"></i>Районы и адреса</span><span><i data-lucide="file-text" aria-hidden="true"></i>Экспорт в CSV</span><span><i data-lucide="wrench" aria-hidden="true"></i>Шаблоны услуг</span></div></div>
+    <form id="payment-form" novalidate>
+      <section class="checkout-step payment-email-step" id="payment-email-step">
+        <div class="step-title"><span class="step-number">1</span><h3>Ваш email</h3></div>
+        <label class="payment-email-field" for="payment-email"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><input id="payment-email" type="email" placeholder="your@email.com" autocomplete="email" required /></label>
+        <p>На эту почту придут данные для входа в личный кабинет</p>
+      </section>
+      <section class="checkout-step" id="payment-plan-step">
+        <div class="step-title"><span class="step-number">2</span><h3>Выберите тариф</h3></div>
+        <div class="tariff-grid" id="payment-tariffs"></div>
+      </section>
+      <section class="checkout-step" id="payment-method-step">
+        <div class="step-title"><span class="step-number">2</span><h3>Способ оплаты</h3></div>
+        <div class="payment-methods">
+          <button class="card-method payment-method selected" type="button" data-method="card" role="radio" aria-checked="true"><span class="card-preview"><img src="/assets/bank_card.svg" alt=""></span><span class="payment-divider"></span><span class="card-method-copy"><strong>Банковская карта</strong><small>Visa, Mastercard, МИР</small></span><span class="radio-circle checked"></span></button>
+          <div class="sbp-card payment-method" data-method="sbp" role="radio" aria-checked="false" tabindex="0"><span class="sbp-logo"><img src="/assets/sbp-full.svg" alt="СБП"></span><span class="payment-divider"></span><span class="payment-method-copy"><strong>СБП</strong><small>Быстрая оплата через QR-код</small></span><span class="radio-circle"></span></div>
+        </div>
+      </section>
+      <section class="checkout-total" id="payment-submit-step"><div class="total-row" id="payment-total-row"><span>К оплате</span><div class="total-amount"><strong id="payment-total">299 ₽</strong><small id="payment-benefit" hidden></small></div></div><button class="btn primary checkout-pay-btn" type="submit" id="pay-main-btn">Перейти к оплате <i data-lucide="arrow-right" aria-hidden="true"></i></button><p class="checkout-feedback" id="checkout-feedback" role="status"></p><p class="checkout-legal">Нажимая кнопку, вы соглашаетесь с <a href="/legal/offer" target="_blank" rel="noopener noreferrer">условиями использования сервиса</a> и <a href="/legal/contacts" target="_blank" rel="noopener noreferrer">правовой информацией</a></p></section>
+    </form>
+  </main>
+</div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="/js/payment.js"></script>
+</body>
+</html>

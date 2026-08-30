@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Вход в личный кабинет</title>
+<link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="login-active">
+<div class="neo-shell">
+  <header class="neo-top-nav">
+    <div class="neo-header-inner">
+      <a class="neo-logo" href="/" aria-label="Neo"><strong>» neo</strong></a>
+      <nav class="top-tabs" aria-label="Основные страницы">
+        <a class="top-tab" href="/">Кабинет</a>
+        <a class="top-tab" href="/pages/payment.html">Оплата</a>
+      </nav>
+    </div>
+  </header>
+  <main class="login-page active">
+    <section class="login-card" aria-labelledby="login-title">
+      <div class="login-initial-content">
+        <div class="login-icon"><i data-lucide="mail" aria-hidden="true"></i></div>
+        <h2 id="login-title">Вход в личный кабинет</h2>
+        <p>Введите email для входа или регистрации</p>
+      </div>
+      <form id="login-form" novalidate>
+        <div class="login-input-wrap" id="login-input-wrap">
+          <i data-lucide="mail" aria-hidden="true"></i>
+          <input id="login-email" type="email" placeholder="your@email.com" required autocomplete="email" />
+        </div>
+        <button type="submit">Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+      </form>
+      <section class="login-code-step" id="login-code-step" hidden>
+        <button class="login-back-btn" type="button" id="login-back-btn"><i data-lucide="arrow-left" aria-hidden="true"></i> Изменить email</button>
+        <div class="login-icon"><i data-lucide="mail-check" aria-hidden="true"></i></div>
+        <h2>Введите код</h2>
+        <p>Мы отправили код подтверждения на <strong id="login-code-email"></strong></p>
+        <div class="login-code-stack">
+          <div class="login-code-inputs" id="login-code-inputs" aria-label="Код из письма">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" autocomplete="one-time-code" aria-label="Цифра 1">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" aria-label="Цифра 2">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" aria-label="Цифра 3">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" aria-label="Цифра 4">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" aria-label="Цифра 5">
+            <input class="login-code-input" inputmode="numeric" maxlength="1" aria-label="Цифра 6">
+          </div>
+          <p class="login-code-error" id="login-code-error" hidden></p>
+          <p class="login-spam-note">Не пришёл код? Проверьте папку «Спам».</p>
+          <button class="login-resend-btn" type="button" id="login-resend-btn" disabled>Отправить код ещё раз через 60 сек.</button>
+        </div>
+        <button class="login-register-btn" type="button" id="login-verify-btn" disabled>Подтвердить код</button>
+      </section>
+    </section>
+    <p class="login-note">Поддержка: <a href="mailto:genvito-team@ya.ru">genvito-team@ya.ru</a></p>
+  </main>
+</div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>
