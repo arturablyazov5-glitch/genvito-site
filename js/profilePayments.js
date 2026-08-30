@@ -9,23 +9,6 @@
   const feedback = document.getElementById('profile-payment-feedback');
   const toggle = document.getElementById('profile-autorenew-toggle');
   const caption = document.getElementById('profile-autorenew-caption');
-  const localDemo = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-  if (localDemo) {
-    row.hidden = false;
-    emptyText.hidden = true;
-    text.textContent = 'Банковская карта •••• 4242';
-    cardCaption.textContent = 'Демо-карта, только локальный просмотр';
-    detach.hidden = false;
-    detach.addEventListener('click', () => {
-      row.hidden = true;
-      emptyText.hidden = false;
-      detach.hidden = true;
-      toggle.classList.remove('is-on');
-      toggle.setAttribute('aria-pressed', 'false');
-      caption.textContent = 'Автоматическое продление отключено';
-    });
-    return;
-  }
   const client = window.__supabaseClient || window.supabase?.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key);
   const { data: { user } = {} } = await client?.auth.getUser() || {};
   if (!user?.email) return;
