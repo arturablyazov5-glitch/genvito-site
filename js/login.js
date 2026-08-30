@@ -96,10 +96,17 @@ verifyButton.addEventListener('click', async () => {
     codeError.hidden = false;
     return;
   }
-  await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/registration-notify`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${data.session.access_token}` }
-  }).catch(() => {});
+  // Supabase uses the same OTP flow for registration and repeat login. The
+  // user's creation timestamp is the only signal returned by verifyOtp that
+  // lets the client distinguish a freshly created account here.
+  const createdAt = Date.parse(data.user?.created_at || '');
+  const isNewUser = Number.isFinite(createdAt) && Date.now() - createdAt < 2 * 60 * 1000;
+  if (isNewUser) {
+    await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/registration-notify`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${data.session.access_token}` }
+    }).catch(() => {});
+  }
   window.location.href = '/';
 });
 
