@@ -102,8 +102,7 @@ code {
   gap: 0.625rem;
   width: 96px;
   height: 20px;
-  background: none;
-  font-size: 1.2rem;
+  background: url('/assets/logo.svg') center / contain no-repeat;
   color: #1d1d1f;
   text-decoration: none;
   transition: opacity 0.15s ease;
@@ -469,6 +468,24 @@ body.payment-active .header-project-divider {
   display: none;
 }
 
+body.document-active .header-profile-bar,
+body.document-active .header-project-divider {
+  display: none;
+}
+
+body.document-active .dashboard-shell {
+  display: block;
+  width: 100%;
+  margin-top: 0;
+  padding: 0 1rem 1rem;
+}
+
+body.document-active .workspace {
+  width: min(64rem, 100%);
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
 .workspace {
   min-width: 0;
 }
@@ -580,6 +597,53 @@ main {
   padding: 20px;
   border-radius: 28px;
   background: var(--surface);
+}
+
+/* Document pages use the same card surface, but their sections are always visible. */
+body.profile-active main.workspace > .tab-panel {
+  display: block;
+}
+
+body.profile-active .workspace > main > .tab-panel {
+  display: block;
+  margin-bottom: 8px;
+}
+
+body.profile-active .workspace > main > .tab-panel h2 {
+  margin: 0 0 var(--space-4);
+  font-size: var(--font-page);
+  line-height: var(--line-page);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+body.profile-active .workspace > main > .tab-panel p {
+  margin: 0 0 var(--space-4);
+  color: var(--text);
+  font-size: var(--font-sm);
+  line-height: 1.5;
+}
+
+body.profile-active .workspace > main > .tab-panel p:last-child {
+  margin-bottom: 0;
+}
+
+body.profile-active .workspace > main > .tab-panel .profile-subscription-meta {
+  display: block;
+  font-size: var(--font-sm);
+  line-height: 1.5;
+}
+
+body.profile-active .workspace > main > .tab-panel span {
+  overflow-wrap: anywhere;
+}
+
+body.profile-active .workspace > main > .tab-panel img[alt="Т-Банк"] {
+  width: 22px;
+  height: 22px;
+  border-radius: 100px;
+  margin-right: 0;
+  margin-bottom: 2px;
 }
 
 /* The Genvito profile is an unframed page with white rows on the gray canvas. */
@@ -1261,6 +1325,7 @@ textarea:focus {
 }
 
 .btn {
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1994,6 +2059,7 @@ textarea:focus {
 .profile-expiry > strong { display: block; margin-top: 4px; font-size: 14px; font-weight: 600; }
 .profile-renew-btn { display: flex; align-items: center; justify-content: center; gap: var(--space-4); width: 100%; margin-top: var(--space-8); padding: var(--space-5); border: 0; border-radius: var(--radius-pill); background: var(--blue); color: #fff; font-size: var(--font-sm); font-weight: 600; }
 .profile-renew-btn .icon { width: 16px; height: 16px; }
+.profile-cancel-btn { display: block; margin: 10px auto 0; padding: 0; border: 0; background: transparent; color: var(--muted); font-size: var(--font-xs); text-decoration: underline; cursor: pointer; }
 .profile-cancel-link { display: block; margin-top: 12px; color: var(--muted); font-size: 12px; text-align: center; text-decoration: underline; text-underline-offset: 3px; }
 
 .profile-link-row strong,

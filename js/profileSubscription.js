@@ -8,7 +8,7 @@
   const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`);
   const data = await response.json().catch(() => ({}));
   const active = Boolean(data.active);
-  const trial = active && data.trialEndsAt;
+  const trial = active && (data.trialEndsAt || data.plan === '3 дня');
   statusElement.textContent = active ? (trial ? 'Пробный период' : 'Подписка активна') : 'Подписка неактивна';
   const statusIcon = document.getElementById('profile-status-icon');
   if (statusIcon) {
@@ -16,10 +16,12 @@
     statusIcon.innerHTML = icon(active ? 'circleCheck' : 'circleX');
   }
   const renewButton = document.getElementById('profile-renew-btn');
+  const cancelButton = document.getElementById('profile-cancel-btn');
   if (renewButton) {
     renewButton.hidden = active && !trial;
-    renewButton.lastChild.textContent = active && !trial ? 'Продлить подписку' : 'Оплатить подписку';
+    renewButton.lastChild.textContent = 'Оплатить подписку';
   }
+  if (cancelButton) cancelButton.hidden = !(active && !trial);
   const plan = document.getElementById('profile-subscription-plan');
   if (plan) plan.textContent = active ? (trial ? '3 дня' : (data.plan || 'Активный тариф')) : 'Нет активного тарифа';
   const expiry = document.getElementById('profile-subscription-expiry');
