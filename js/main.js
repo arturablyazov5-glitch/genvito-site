@@ -1,7 +1,7 @@
 // Точка входа фронтенда: грузит store, инициализирует все панели и связывает их.
 
 (async function main() {
-  await initProfileBar();
+  initProfileBar();
   const store = await Api.getStore();
   initProfileSettings(store);
 
