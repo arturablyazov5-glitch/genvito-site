@@ -11,7 +11,8 @@ const supabaseClient = window.__supabaseClient || (window.supabase && (window.__
   }
   const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`);
   const status = await response.json().catch(() => ({}));
-  if (status.active) return;
+  const perpetualActive = status.status === 'active' && !status.currentPeriodEnd && !status.trialEndsAt;
+  if (status.active || perpetualActive) return;
   if (lockAction && !status.trialUsed) lockAction.textContent = 'Активировать пробный период';
   accessLock.hidden = false;
   document.body.classList.add('access-locked');
