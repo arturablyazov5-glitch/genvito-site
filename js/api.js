@@ -29,12 +29,11 @@ const Api = {
     return res.json();
   },
   async saveServices(services) {
-    const res = await this.request(this.functionUrl('services'), {
+    return jsonOrThrow(this.request(this.functionUrl('services'), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ services })
-    });
-    return res.json();
+    }));
   },
   async saveSettings(settings) {
     const res = await this.request(this.functionUrl('settings'), {

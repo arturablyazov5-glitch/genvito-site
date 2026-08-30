@@ -20,21 +20,28 @@ function initServicesPanel(store, onChange) {
   const indicator = document.getElementById('services-saved');
   const addBtn = document.getElementById('add-service-btn');
   const toggleAllBtn = document.getElementById('toggle-all-services-btn');
+  let saveQueue = Promise.resolve();
 
   // Какие карточки свёрнуты — состояние только для UI, на сервер не уходит.
   const collapsedIds = new Set();
 
-  const save = debounce(async () => {
+  const save = debounce(() => {
     const services = readServicesFromDom();
-    const res = await Api.saveServices(services);
-    store.services = res.services;
-    flashSaved(indicator);
-    onChange();
+    saveQueue = saveQueue.then(async () => {
+      const res = await Api.saveServices(services);
+      store.services = res.services;
+      flashSaved(indicator);
+      onChange();
+    }).catch((error) => {
+      console.error('Не удалось сохранить услуги:', error);
+      indicator.textContent = 'Ошибка сохранения';
+    });
   }, 500);
 
   function readServicesFromDom() {
     return Array.from(list.querySelectorAll('.service-card')).map((card) => ({
       id: card.dataset.id,
+      enabled: card.querySelector('.service-enabled').checked,
       name: card.querySelector('.service-name').value.trim(),
       avitoCategoryKey: card.querySelector('.service-avito-category').value,
       price: card.querySelector('.service-price').value.trim(),
@@ -43,12 +50,10 @@ function initServicesPanel(store, onChange) {
         text: card.querySelector('.service-tpl-text').value,
         seo: card.querySelector('.service-tpl-seo').value
       },
-      photos: card
-        .querySelector('.service-photos')
-        .value.split('\n')
-        .map((s) => s.trim())
-        .filter(Boolean)
-        .slice(0, 10)
+      photos: Array.from(card.querySelectorAll('.service-photo-row')).map((row) => ({
+        url: row.querySelector('.service-photo-input').value.trim(),
+        pinned: row.querySelector('.service-photo-pin').classList.contains('active')
+      })).filter((photo) => photo.url)
     }));
   }
 
@@ -74,7 +79,7 @@ function initServicesPanel(store, onChange) {
       card.querySelector('.service-tpl-title')?.value,
       card.querySelector('.service-tpl-text')?.value,
       card.querySelector('.service-tpl-seo')?.value,
-      card.querySelector('.service-photos')?.value
+      card.querySelector('.service-photo-input')?.value
     ].some((value) => String(value || '').trim()));
     toggleAllBtn.hidden = !hasTemplates;
     toggleAllBtn.style.display = hasTemplates ? 'inline-flex' : 'none';
@@ -97,6 +102,7 @@ function initServicesPanel(store, onChange) {
     card.dataset.id = service.id;
     card.innerHTML = `
       <div class="service-card-header">
+        <label class="service-enabled-label" title="Участвует в генерации"><input class="service-enabled" type="checkbox" ${service.enabled !== false ? 'checked' : ''} /><span>Включён</span></label>
         <input class="service-name" type="text" placeholder="Название услуги, напр. Ремонт посудомоечных машин" value="${escapeHtml(service.name)}" />
         <div class="select-control">
           <select class="service-avito-category" title="Категория Авито">${categoryOptions}</select>
@@ -137,8 +143,9 @@ function initServicesPanel(store, onChange) {
           <p class="length-status" data-len="body"></p>
         </div>
 
-        <label class="field-label">${icon('image')} Ссылки на фото с Яндекс.Диска (до 10, по одной на строку)</label>
-        <textarea class="service-photos" rows="1" placeholder="https://disk.yandex.ru/...">${escapeHtml((service.photos || []).filter(Boolean).join('\n'))}</textarea>
+        <label class="field-label">${icon('image')} Фото (закреплённые остаются на своей позиции)</label>
+        <div class="service-photos"></div>
+        <button type="button" class="btn secondary add-photo-btn">${icon('plus')} Добавить фото</button>
       </div>
     `;
 
@@ -164,9 +171,22 @@ function initServicesPanel(store, onChange) {
       el.addEventListener('input', save);
       el.addEventListener('change', save);
     });
-    // Фото — обычное поле с JS-автовысотой. Заголовок/текст/SEO — с подсветкой
+    const photosBox = card.querySelector('.service-photos');
+    const rawPhotos = service.photos || [];
+    rawPhotos.forEach((photo, index) => addPhotoRow(typeof photo === 'string' ? { url: photo, pinned: false } : photo, index));
+    if (!rawPhotos.length) addPhotoRow({ url: '', pinned: false }, 0);
+    card.querySelector('.add-photo-btn').addEventListener('click', () => { addPhotoRow({ url: '', pinned: false }); save(); });
+    function addPhotoRow(photo, index) {
+      const row = document.createElement('div'); row.className = 'service-photo-row';
+      row.innerHTML = `<button type="button" class="icon-btn service-photo-pin" title="Закрепить позицию">${icon('pin')}</button><input class="service-photo-input" type="url" placeholder="https://disk.yandex.ru/..." value="${escapeHtml(photo.url || '')}"><button type="button" class="icon-btn danger remove-photo-btn" title="Удалить фото">${icon('trash')}</button>`;
+      photosBox.appendChild(row);
+      row.querySelector('.service-photo-pin').classList.toggle('active', Boolean(photo.pinned));
+      row.querySelector('.service-photo-pin').addEventListener('click', () => { row.querySelector('.service-photo-pin').classList.toggle('active'); save(); });
+      row.querySelector('.remove-photo-btn').addEventListener('click', () => { row.remove(); save(); });
+      row.querySelector('.service-photo-input').addEventListener('input', save);
+    }
+    // Заголовок/текст/SEO — с подсветкой
     // скобок, у них своя автовысота через CSS-грид (см. braceHighlight.js).
-    attachAutosize(card.querySelector('.service-photos'));
     initBraceFieldsIn(card);
 
     const recompute = () => updateLengthCounters(card, store.districts);
@@ -199,7 +219,8 @@ function initServicesPanel(store, onChange) {
       avitoCategoryKey: store.avitoCategoryKey || AVITO_CATEGORIES[0].key,
       price: '',
       template: { title: '', text: '', seo: '' },
-      photos: []
+      photos: [],
+      enabled: true
     };
     store.services.push(newService);
     list.appendChild(renderCard(newService)); // новая карточка всегда открыта

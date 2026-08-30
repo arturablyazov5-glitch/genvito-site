@@ -9,10 +9,10 @@ const supabaseClient = window.__supabaseClient || (window.supabase && (window.__
     if (location.hostname === 'localhost' && (new URLSearchParams(location.search).has('demo-card') || sessionStorage.getItem('genvito-demo-card') === '1')) return;
     return window.location.replace('/login');
   }
-  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`);
+  const token = (await supabaseClient.auth.getSession()).data.session?.access_token;
+  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });
   const status = await response.json().catch(() => ({}));
-  const perpetualActive = status.status === 'active' && !status.currentPeriodEnd && !status.trialEndsAt;
-  if (status.active || perpetualActive) return;
+  if (status.active) return;
   if (lockAction && !status.trialUsed) lockAction.textContent = 'Активировать пробный период';
   accessLock.hidden = false;
   document.body.classList.add('access-locked');

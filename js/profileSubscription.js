@@ -5,7 +5,8 @@
   const { data: { user } = {} } = await authClient?.auth.getUser() || {};
   const email = (user?.email || '').trim().toLowerCase();
   if (!email) return;
-  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`);
+  const token = (await authClient.auth.getSession()).data.session?.access_token;
+  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });
   const data = await response.json().catch(() => ({}));
   const active = Boolean(data.active);
   const trial = active && (data.trialEndsAt || data.plan === '3 дня');
@@ -21,7 +22,22 @@
     renewButton.hidden = active;
     renewButton.lastChild.textContent = 'Оплатить подписку';
   }
-  if (cancelButton) cancelButton.hidden = !(active && !trial);
+  if (cancelButton) {
+    cancelButton.hidden = !(active && !trial && data.plan !== 'Бессрочный доступ' && data.autoRenew);
+    cancelButton.addEventListener('click', async () => {
+      cancelButton.disabled = true;
+      const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/auto-renew`, {
+        method: 'POST', headers: { Authorization: `Bearer ${token || ''}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ enabled: false }),
+      });
+      if (response.ok) {
+        cancelButton.hidden = true;
+        statusElement.textContent = 'Подписка активна до конца периода';
+      } else {
+        cancelButton.disabled = false;
+        cancelButton.textContent = 'Не удалось отключить. Повторить';
+      }
+    });
+  }
   const plan = document.getElementById('profile-subscription-plan');
   if (plan) plan.textContent = active ? (trial ? '3 дня' : (data.plan || 'Активный тариф')) : 'Нет активного тарифа';
   const expiry = document.getElementById('profile-subscription-expiry');

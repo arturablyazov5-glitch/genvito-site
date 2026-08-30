@@ -16,7 +16,8 @@ const signedIn = Boolean(user);
 const accountEmail = (user?.email || '').trim().toLowerCase();
 let trialUsed = false;
 if (accountEmail) {
-  const statusResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(accountEmail)}`);
+  const accountToken = (await authClient.auth.getSession()).data.session?.access_token;
+  const statusResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(accountEmail)}`, { headers: { Authorization: `Bearer ${accountToken || ''}` } });
   const status = await statusResponse.json().catch(() => ({}));
   trialUsed = Boolean(status.trialUsed);
 }
@@ -24,6 +25,10 @@ const tariffs = document.getElementById('payment-tariffs');
 // Тарифы и идентификатор продукта Genvito для платёжного checkout.
 const CHECKOUT_ENDPOINT = `${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/checkout`;
 const CHECKOUT_PRODUCT_ID = '078103ba-9cc0-4cd8-8ed8-297b251039cf';
+const configResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/config`).catch(() => null);
+const paymentConfig = configResponse?.ok ? await configResponse.json().catch(() => ({})) : {};
+const sbpMethod = document.getElementById('payment-method-sbp');
+if (sbpMethod && Array.isArray(paymentConfig.methods) && !paymentConfig.methods.includes('sbp')) sbpMethod.hidden = true;
 
 function setPaymentEmailError(message = '') {
   const hasError = Boolean(message);
@@ -98,12 +103,10 @@ let selectedPaymentMethod = 'card';
 initRadioGroup(document, '.payment-method', (method) => {
   selectedPaymentMethod = method?.dataset.method || 'sbp';
   if (selectedTariff?.dataset.plan === '3 дня') return;
-  if (paymentTotalRow) paymentTotalRow.hidden = selectedPaymentMethod === 'sbp';
+  if (paymentTotalRow) paymentTotalRow.hidden = false;
   if (paymentButton) {
-    paymentButton.classList.toggle('is-unavailable', selectedPaymentMethod === 'sbp');
-    paymentButton.textContent = selectedPaymentMethod === 'sbp'
-      ? 'Временно недоступно'
-      : 'Перейти к оплате';
+    paymentButton.classList.remove('is-unavailable');
+    paymentButton.textContent = 'Перейти к оплате';
   }
 });
 if (!signedIn && totalPrice) totalPrice.textContent = '0 ₽';
@@ -154,7 +157,7 @@ paymentForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  if (selectedPaymentMethod === 'card') {
+  if (selectedPaymentMethod === 'card' || selectedPaymentMethod === 'sbp') {
     const amount = Number(selectedTariff?.dataset.price || 0);
     const email = paymentEmail.value.trim() || accountEmail;
     const button = paymentButton;
@@ -182,13 +185,18 @@ paymentForm.addEventListener('submit', async (event) => {
           amount,
           currency: 'RUB',
           email,
+          paymentMethod: selectedPaymentMethod,
           lang: 'ru',
         }),
       });
       const data = await response.json().catch(() => ({}));
       if (response.ok && data.paymentUrl) {
-        if (selectedTariff?.dataset.plan === '3 дня') {
-        }
+        sessionStorage.setItem('genvito-pending-payment', JSON.stringify({
+          paymentId: data.paymentId || '',
+          checkoutToken: data.checkoutToken || '',
+          plan: data.plan || selectedTariff?.dataset.plan || '',
+          createdAt: new Date().toISOString(),
+        }));
         window.location.href = data.paymentUrl;
         return;
       }

@@ -367,7 +367,7 @@ body.access-locked .generate-summary {
   background: var(--soft);
   color: var(--text);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 500;
   appearance: none;
   cursor: pointer;
 }
@@ -729,19 +729,48 @@ body.profile-active .workspace > main > .tab-panel img[alt="Т-Банк"] {
 .autorenew-toggle span { position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: transform 0.2s ease; }
 .autorenew-toggle.is-on { background: var(--blue); }
 .autorenew-toggle.is-on span { transform: translateX(20px); }
-.payment-empty-card { display: grid; justify-items: center; gap: var(--space-6); margin-top: var(--space-12); padding: 32px; border: 1px dashed var(--line); border-radius: var(--radius-card); background: var(--surface); text-align: center; }
+.autorenew-toggle:disabled { opacity: 0.55; cursor: not-allowed; }
+.payment-empty-card { display: grid; justify-items: center; gap: var(--space-6); margin-top: var(--space-12); padding: 24px; border: 1px dashed var(--line); border-radius: var(--radius-card); background: var(--surface); text-align: center; }
 .payment-empty-card .icon { width: 32px; height: 32px; color: var(--muted); }
 .payment-empty-card p { margin: 0; color: var(--muted); font-size: 14px; font-weight: 500; }
 .payment-method-row { display: flex; align-items: center; width: 100%; gap: 16px; text-align: left; }
+.payment-method-list { display: grid; width: 100%; gap: 12px; }
+.payment-method-list .payment-method-row { padding: 4px 0; }
+.payment-method-primary { display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 5px 9px; border: 0; border-radius: 999px; color: var(--blue); background: #e7f0ff; font: inherit; font-size: 12px; cursor: pointer; }
+.payment-method-primary[aria-pressed="true"] { color: #16845a; background: #e5f8ef; cursor: default; }
+.payment-method-primary:disabled { color: var(--muted); background: var(--soft); cursor: not-allowed; }
 .payment-method-row[hidden] { display: none !important; }
 .payment-method-card-icon { width: 54px; height: 54px; flex: 0 0 54px; }
-.payment-method-card-icon.is-payment-logo { width: 92px; height: 44px; flex-basis: 92px; object-fit: contain; }
+.payment-method-card-icon.is-payment-logo { width: 44px; height: 44px; flex-basis: 44px; object-fit: cover; border-radius: 10px; }
+.payment-method-card-icon.is-sbp-logo { width: 64px; height: 44px; flex-basis: 64px; object-fit: contain; }
 .payment-method-copy { display: grid; gap: 4px; min-width: 0; flex: 1; }
 .payment-method-copy strong { color: var(--text); font-size: 15px; font-weight: 650; }
 .payment-method-copy small { color: var(--muted); font-size: 13px; }
 .payment-method-remove { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 12px; color: var(--muted); background: transparent; cursor: pointer; }
 .payment-method-remove:hover { color: #d14343; background: #fff1f1; }
 .payment-method-remove svg { width: 20px; height: 20px; }
+
+.payment-success-page { min-height: calc(100vh - 78px); display: grid; place-items: center; padding: 48px 20px; }
+.payment-success-card { width: min(100%, 560px); display: grid; justify-items: center; gap: 16px; padding: 48px; border-radius: 36px; background: var(--surface); text-align: center; }
+.payment-success-icon { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 24px; color: var(--blue); background: #e7f0ff; }
+.payment-success-icon.is-success { color: #08a875; background: #e5f8ef; }
+.payment-success-icon.is-error { color: #d14343; background: #fff0f0; }
+.payment-success-icon.is-pending { color: #9a6b00; background: #fff7dd; }
+.payment-success-icon svg { width: 36px; height: 36px; }
+.payment-success-card h1 { margin: 4px 0 0; font-size: clamp(28px, 5vw, 40px); }
+.payment-success-card > p { max-width: 430px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.5; }
+.payment-success-details { width: 100%; display: flex; justify-content: space-between; gap: 16px; padding: 18px 20px; border-radius: 18px; background: var(--panel); text-align: left; }
+.payment-success-details[hidden], .payment-success-actions [hidden] { display: none !important; }
+.payment-success-details span { color: var(--muted); }
+.payment-success-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; width: 100%; margin-top: 8px; }
+.payment-success-actions .btn { min-width: 180px; }
+
+@media (max-width: 600px) {
+  .payment-success-page { min-height: calc(100vh - 80px); padding: 24px 16px; }
+  .payment-success-card { padding: 32px 24px; border-radius: 28px; }
+  .payment-success-actions { display: grid; }
+  .payment-success-actions .btn { width: 100%; }
+}
 .payment-empty-text[hidden] { display: none !important; }
 .tab-panel.profile-history-panel { padding: 0; border-radius: 0; background: transparent; }
 .profile-history-panel h2 { margin: 0; font-size: var(--font-page); line-height: var(--line-page); font-weight: 700; letter-spacing: -0.025em; }
@@ -1271,6 +1300,15 @@ textarea {
   background: var(--surface);
 }
 
+.service-enabled-label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-size: 12px; color: var(--muted); }
+.service-enabled-label input { accent-color: var(--accent); }
+.service-card:not(:has(.service-enabled:checked)) { opacity: .62; }
+
+.service-photo-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.service-photo-row .service-photo-input { flex: 1; min-width: 0; }
+.service-photo-pin.active { color: var(--accent); background: var(--surface-muted, #eef2ff); }
+.add-photo-btn { margin-top: 6px; }
+
 textarea {
   width: 100%;
   padding: 12px 14px;
@@ -1312,10 +1350,12 @@ textarea:focus {
 
 .tpl-grow-wrap {
   display: grid;
+  position: relative;
 }
 
 .tpl-grow-wrap > .tpl-backdrop,
 .tpl-grow-wrap > textarea {
+  box-sizing: border-box;
   grid-area: 1 / 1 / 2 / 2;
   padding: 12px 14px;
   font-family: inherit;
@@ -1331,9 +1371,13 @@ textarea:focus {
   background: var(--surface);
   color: var(--text);
   pointer-events: none;
+  z-index: 0;
 }
 
 .tpl-grow-wrap textarea {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
   width: 100%;
   border: 1px solid transparent;
   background: transparent;

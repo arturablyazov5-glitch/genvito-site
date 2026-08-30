@@ -102,8 +102,8 @@
   <button class="neo-back-button" type="button" onclick="location.href='/profile'">← Назад в профиль</button>
   <h2>Способы оплаты</h2>
   <p class="subtitle">Привязанные способы оплаты вашей подписки</p>
-  <div class="autorenew-card"><div><strong>Автопродление</strong><small id="profile-autorenew-caption">Автоматическое продление включено</small></div><button class="autorenew-toggle is-on" type="button" id="profile-autorenew-toggle" aria-pressed="true"><span></span></button></div>
-  <div class="payment-empty-card" id="profile-payment-method-card"><div class="payment-method-row" id="profile-payment-method-row" hidden><img src="/assets/bank_card.svg" alt="Банковская карта" class="payment-method-card-icon"><div class="payment-method-copy"><strong id="profile-payment-method-text">Банковская карта</strong><small id="profile-payment-method-caption">Карта сохранена для автопродления</small></div><button class="payment-method-remove" type="button" id="profile-detach-card" hidden aria-label="Отвязать карту" title="Отвязать карту"><i data-lucide="trash-2" aria-hidden="true"></i></button></div><p class="payment-empty-text" id="profile-payment-empty-text">Нет привязанных способов оплаты</p><p class="payment-feedback" id="profile-payment-feedback" role="status"></p></div>
+  <div class="autorenew-card"><div><strong>Автопродление</strong><small id="profile-autorenew-caption">Проверяем настройки…</small></div><button class="autorenew-toggle" type="button" id="profile-autorenew-toggle" aria-pressed="false"><span></span></button></div>
+  <div class="payment-empty-card" id="profile-payment-method-card"><div class="payment-method-list" id="profile-payment-method-list"></div><p class="payment-empty-text" id="profile-payment-empty-text">Нет привязанных способов оплаты</p><p class="payment-feedback" id="profile-payment-feedback" role="status"></p></div>
 </section>
 
 </div></main></div>
@@ -123,7 +123,7 @@
 <script src="/js/lengthLimits.js"></script>
 <script src="/js/avitoCategories.js"></script>
 <script src="/js/districtsPanel.js"></script>
-<script src="/js/servicesPanel.js?v=20260830-2"></script>
+<script src="/js/servicesPanel.js?v=20260830-3"></script>
 <script src="/js/generatePanel.js"></script>
 <script src="/js/profileBar.js"></script>
 <script src="/js/profileHistory.js"></script>
