@@ -19,8 +19,7 @@ if (accountEmail) {
   trialUsed = Boolean(status.trialUsed);
 }
 const tariffs = document.getElementById('payment-tariffs');
-// Временные значения из Trace Logos. После получения новых реквизитов
-// меняются только эти две константы.
+// Тарифы и идентификатор продукта Genvito для платёжного checkout.
 const CHECKOUT_ENDPOINT = `${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/checkout`;
 const CHECKOUT_PRODUCT_ID = '078103ba-9cc0-4cd8-8ed8-297b251039cf';
 

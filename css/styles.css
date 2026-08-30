@@ -96,23 +96,24 @@ code {
   padding: 0 1rem;
 }
 
-.neo-logo {
+.genvito-logo {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   width: 96px;
   height: 20px;
-  background: url('/assets/logo.svg') center / contain no-repeat;
+  background: none;
+  font-size: 1.2rem;
   color: #1d1d1f;
   text-decoration: none;
   transition: opacity 0.15s ease;
 }
 
-.neo-logo:hover {
+.genvito-logo:hover {
   opacity: 0.7;
 }
 
-.neo-logo svg {
+.genvito-logo svg {
   display: none;
 }
 
@@ -581,7 +582,7 @@ main {
   background: var(--surface);
 }
 
-/* The Neo profile is an unframed page with white rows on the gray canvas. */
+/* The Genvito profile is an unframed page with white rows on the gray canvas. */
 .tab-panel.profile-panel {
   padding: 0;
   border-radius: 0;
