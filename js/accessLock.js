@@ -6,7 +6,7 @@ const supabaseClient = window.__supabaseClient || (window.supabase && (window.__
   const { data } = await supabaseClient?.auth.getUser() || {};
   const email = data?.user?.email;
   if (!email) return window.location.replace('/login');
-  const response = await fetch(`/api/payment/status?email=${encodeURIComponent(email)}`);
+  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`);
   const status = await response.json().catch(() => ({}));
   if (status.active) return;
   if (lockAction && !status.trialUsed) lockAction.textContent = 'Активировать пробный период';
