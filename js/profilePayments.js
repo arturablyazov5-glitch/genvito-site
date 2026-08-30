@@ -33,7 +33,19 @@
   const status = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(user.email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });
   const data = await status.json().catch(() => ({}));
   const attached = Boolean(data.paymentMethodId);
-  if (attached) { row.hidden = false; emptyText.hidden = true; const methodName = data.cardLast4 ? `Банковская карта •••• ${data.cardLast4}` : data.paymentMethodType === 'yoo_money' ? 'ЮMoney' : 'Способ оплаты привязан'; text.textContent = methodName; cardCaption.textContent = 'Сохранён для автопродления'; detach.hidden = false; }
+  if (attached) {
+    row.hidden = false;
+    emptyText.hidden = true;
+    const isYooMoney = data.paymentMethodType === 'yoo_money';
+    const methodIcon = row.querySelector('.payment-method-card-icon');
+    methodIcon.src = isYooMoney ? 'https://trace-logos.ru/assets/logos/svgs/yoomoney.svg' : '/assets/bank_card.svg';
+    methodIcon.alt = isYooMoney ? 'ЮMoney' : 'Банковская карта';
+    methodIcon.classList.toggle('is-payment-logo', isYooMoney);
+    const methodName = data.cardLast4 ? `Банковская карта •••• ${data.cardLast4}` : isYooMoney ? 'ЮMoney' : 'Способ оплаты привязан';
+    text.textContent = methodName;
+    cardCaption.textContent = 'Сохранён для автопродления';
+    detach.hidden = false;
+  }
   if (data.autoRenew !== false) { toggle.classList.add('is-on'); toggle.setAttribute('aria-pressed', 'true'); caption.textContent = 'Автоматическое продление включено'; }
   detach?.addEventListener('click', async () => {
     detach.disabled = true;

@@ -735,6 +735,7 @@ body.profile-active .workspace > main > .tab-panel img[alt="Т-Банк"] {
 .payment-method-row { display: flex; align-items: center; width: 100%; gap: 16px; text-align: left; }
 .payment-method-row[hidden] { display: none !important; }
 .payment-method-card-icon { width: 54px; height: 54px; flex: 0 0 54px; }
+.payment-method-card-icon.is-payment-logo { width: 92px; height: 44px; flex-basis: 92px; object-fit: contain; }
 .payment-method-copy { display: grid; gap: 4px; min-width: 0; flex: 1; }
 .payment-method-copy strong { color: var(--text); font-size: 15px; font-weight: 650; }
 .payment-method-copy small { color: var(--muted); font-size: 13px; }
