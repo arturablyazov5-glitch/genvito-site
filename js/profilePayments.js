@@ -33,7 +33,7 @@
   const status = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(user.email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });
   const data = await status.json().catch(() => ({}));
   const attached = Boolean(data.paymentMethodId);
-  if (attached) { row.hidden = false; emptyText.hidden = true; text.textContent = 'Банковская карта привязана'; cardCaption.textContent = 'Сохранена для автопродления'; detach.hidden = false; }
+  if (attached) { row.hidden = false; emptyText.hidden = true; const methodName = data.cardLast4 ? `Банковская карта •••• ${data.cardLast4}` : data.paymentMethodType === 'yoo_money' ? 'ЮMoney' : 'Способ оплаты привязан'; text.textContent = methodName; cardCaption.textContent = 'Сохранён для автопродления'; detach.hidden = false; }
   if (data.autoRenew !== false) { toggle.classList.add('is-on'); toggle.setAttribute('aria-pressed', 'true'); caption.textContent = 'Автоматическое продление включено'; }
   detach?.addEventListener('click', async () => {
     detach.disabled = true;
