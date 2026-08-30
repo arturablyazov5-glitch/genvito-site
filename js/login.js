@@ -96,7 +96,7 @@ verifyButton.addEventListener('click', async () => {
     codeError.hidden = false;
     return;
   }
-  fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/registration-notify`, {
+  await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/registration-notify`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${data.session.access_token}` }
   }).catch(() => {});
