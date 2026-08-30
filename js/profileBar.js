@@ -142,7 +142,7 @@ async function initProfileBar() {
 }
 
 function initProfileSettings(store) {
-  const select = document.getElementById('profile-avito-category');
+  const select = document.getElementById('profile-avito-category') || document.getElementById('generate-settings-avito-category');
   if (!select || typeof AVITO_CATEGORIES === 'undefined') return;
   select.innerHTML = AVITO_CATEGORIES.map((item) => `<option value="${escapeHtml(item.key)}">${escapeHtml(item.label)}</option>`).join('');
   select.value = store.avitoCategoryKey || AVITO_CATEGORIES[0].key;

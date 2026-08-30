@@ -3,6 +3,13 @@ function setInnerHTML(id, html) {
   if (element) element.innerHTML = html;
 }
 
+function initBackToCabinet(selector = '[data-back-to-cabinet]') {
+  document.querySelectorAll(selector).forEach((element) => {
+    element.href = '/districts';
+    element.innerHTML = icon('arrowLeft') + ' Назад в кабинет';
+  });
+}
+
   setInnerHTML('cabinet-view-btn', icon('user') + ' Кабинет')
   setInnerHTML('payment-view-btn', icon('creditCard') + ' Оплата')
   setInnerHTML('logout-view-btn', icon('logOut'))
@@ -24,6 +31,7 @@ function setInnerHTML(id, html) {
   setInnerHTML('synonym-help-icon', icon('fileText'))
   setInnerHTML('profile-select-chevron', icon('chevronDown'))
   setInnerHTML('profile-category-chevron', icon('chevronDown'))
+  setInnerHTML('generate-settings-category-chevron', icon('chevronDown'))
   setInnerHTML('new-profile-btn', icon('plus'))
   setInnerHTML('rename-profile-btn', icon('pencil'))
   setInnerHTML('delete-profile-btn', icon('trash'))
@@ -46,10 +54,11 @@ function setInnerHTML(id, html) {
   setInnerHTML('profile-wifi-icon', icon('wifiOff'))
   setInnerHTML('profile-calendar-icon', icon('calendarDays'))
   setInnerHTML('profile-refresh-icon', icon('refreshCw'))
-  setInnerHTML('referral-back-btn', icon('arrowLeft') + ' Назад в кабинет')
-  setInnerHTML('referral-sparkles-icon', icon('sparkles'))
-  setInnerHTML('referral-gift-icon', icon('gift'))
-  setInnerHTML('referral-copy-btn', icon('copy') + ' Скопировать')
+  initBackToCabinet()
+  const referralBackButton = document.getElementById('referral-back-btn')
+  if (referralBackButton) referralBackButton.href = '/profile'
+  setInnerHTML('referral-copy-btn', icon('copy') + ' Пока не работает')
+  document.getElementById('referral-copy-btn')?.setAttribute('disabled', 'disabled')
   setInnerHTML('referral-users-icon', icon('users'))
   setInnerHTML('referral-stat-sparkles-icon', icon('sparkles'))
   setInnerHTML('profile-payments-back-btn', icon('arrowLeft') + ' Назад в профиль')

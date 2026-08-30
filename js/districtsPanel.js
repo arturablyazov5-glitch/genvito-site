@@ -65,6 +65,7 @@ function initDistrictsPanel(store, onChange) {
     const currentRows = readRowsFromDom();
     const hasDistrictsOrAddresses = currentRows.some((r) => r.district || r.address);
     tableScroll.hidden = !hasDistrictsOrAddresses;
+    tableScroll.style.display = hasDistrictsOrAddresses ? 'block' : 'none';
 
     const filled = currentRows.filter((r) => r.district);
     const withoutAddress = filled.filter((r) => !r.address).length;

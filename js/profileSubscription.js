@@ -18,7 +18,7 @@
   const renewButton = document.getElementById('profile-renew-btn');
   const cancelButton = document.getElementById('profile-cancel-btn');
   if (renewButton) {
-    renewButton.hidden = active && !trial;
+    renewButton.hidden = active;
     renewButton.lastChild.textContent = 'Оплатить подписку';
   }
   if (cancelButton) cancelButton.hidden = !(active && !trial);

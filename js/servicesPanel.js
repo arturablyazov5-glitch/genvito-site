@@ -69,7 +69,16 @@ function initServicesPanel(store, onChange) {
 
   function updateToggleAllButton() {
     const cards = Array.from(list.querySelectorAll('.service-card'));
-    toggleAllBtn.hidden = cards.length === 0;
+    const hasTemplates = cards.some((card) => [
+      card.querySelector('.service-name')?.value,
+      card.querySelector('.service-tpl-title')?.value,
+      card.querySelector('.service-tpl-text')?.value,
+      card.querySelector('.service-tpl-seo')?.value,
+      card.querySelector('.service-photos')?.value
+    ].some((value) => String(value || '').trim()));
+    toggleAllBtn.hidden = !hasTemplates;
+    toggleAllBtn.style.display = hasTemplates ? 'inline-flex' : 'none';
+    list.closest('.services-main-card')?.classList.toggle('has-services', hasTemplates);
     const allCollapsed =
       cards.length > 0 && cards.every((card) => collapsedIds.has(card.dataset.id));
     toggleAllBtn.innerHTML = icon('chevronsUpDown') + (allCollapsed ? ' Раскрыть все' : ' Скрыть все');

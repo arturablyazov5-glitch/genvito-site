@@ -1,5 +1,7 @@
 (async () => {
 const paymentEmail = document.getElementById('payment-email');
+const paymentEmailField = document.querySelector('.payment-email-field');
+const paymentEmailError = document.getElementById('payment-email-error');
 const emailStep = document.getElementById('payment-email-step');
 const planStep = document.getElementById('payment-plan-step');
 const methodStep = document.getElementById('payment-method-step');
@@ -22,6 +24,20 @@ const tariffs = document.getElementById('payment-tariffs');
 // Тарифы и идентификатор продукта Genvito для платёжного checkout.
 const CHECKOUT_ENDPOINT = `${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/checkout`;
 const CHECKOUT_PRODUCT_ID = '078103ba-9cc0-4cd8-8ed8-297b251039cf';
+
+function setPaymentEmailError(message = '') {
+  const hasError = Boolean(message);
+  paymentEmailField?.classList.toggle('has-error', hasError);
+  if (paymentEmailError) {
+    paymentEmailError.textContent = message;
+    paymentEmailError.hidden = !hasError;
+  }
+  if (hasError) {
+    requestAnimationFrame(() => paymentEmailField?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+  }
+}
+
+paymentEmail.addEventListener('input', () => setPaymentEmailError());
 
 function paymentErrorText(error) {
   const normalized = String(error || '').toLowerCase();
@@ -104,13 +120,14 @@ if (signedIn) {
 paymentForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (!signedIn && selectedTariff?.dataset.plan !== '3 дня' && !paymentEmail.checkValidity()) {
-    paymentEmail.reportValidity();
+    setPaymentEmailError(paymentEmail.value.trim() ? 'Введите корректный email.' : 'Укажите email.');
     return;
   }
 
   if (selectedTariff?.dataset.plan === '3 дня') {
     const trialEmail = paymentEmail.value.trim() || accountEmail;
     if (!trialEmail) {
+      setPaymentEmailError('Укажите email для активации пробного периода.');
       feedback.textContent = 'Укажите email для активации пробного периода.';
       feedback.classList.add('is-error', 'is-visible');
       return;
@@ -120,6 +137,10 @@ paymentForm.addEventListener('submit', async (event) => {
     if (!trialResponse.ok) {
       feedback.textContent = trialData.error === 'trial_already_used' ? 'Пробный период для этого email уже использован.' : 'Не удалось активировать пробный период. Попробуйте ещё раз.';
       feedback.classList.add('is-error', 'is-visible');
+      return;
+    }
+    if (trialData.paymentUrl) {
+      window.location.href = trialData.paymentUrl;
       return;
     }
     feedback.textContent = 'Пробный период активирован на 3 дня.';
@@ -140,6 +161,7 @@ paymentForm.addEventListener('submit', async (event) => {
     const oldLabel = button?.textContent || '';
 
     if (!selectedTariff || !email) {
+      setPaymentEmailError('Укажите email и выберите тариф.');
       feedback.textContent = 'Укажите email и выберите тариф.';
       feedback.classList.add('is-error');
       feedback.classList.add('is-visible');
