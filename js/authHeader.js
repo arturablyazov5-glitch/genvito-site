@@ -45,7 +45,7 @@ function showLogout(element) {
   document.body.classList.toggle('account-pending', !email);
   const sidebarLogout = document.getElementById('sidebar-logout-btn');
   const adminTab = document.getElementById('tab-btn-admin');
-  if (adminTab) adminTab.hidden = String(user.email || '').toLowerCase() !== 'sixxset@ya.ru';
+  if (adminTab) adminTab.hidden = String(email || '').toLowerCase() !== 'sixxset@ya.ru';
   const headerLogout = document.getElementById('logout-view-btn');
   if (email) {
     showLogout(sidebarLogout);
