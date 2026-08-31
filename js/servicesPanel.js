@@ -102,50 +102,64 @@ function initServicesPanel(store, onChange) {
     card.dataset.id = service.id;
     card.innerHTML = `
       <div class="service-card-header">
-        <label class="service-enabled-label" title="Участвует в генерации"><input class="service-enabled" type="checkbox" ${service.enabled !== false ? 'checked' : ''} /><span>Включён</span></label>
-        <input class="service-name" type="text" placeholder="Название услуги, напр. Ремонт посудомоечных машин" value="${escapeHtml(service.name)}" />
-        <div class="select-control">
-          <select class="service-avito-category" title="Категория Авито">${categoryOptions}</select>
-          <span class="select-control-icon" aria-hidden="true">${icon('chevronDown')}</span>
+        <div class="service-card-primary">
+          <input class="service-name" type="text" aria-label="Название услуги" placeholder="Название услуги" value="${escapeHtml(service.name)}" />
+          <div class="service-card-actions">
+            <button class="icon-btn danger remove-service-btn" title="Удалить услугу" aria-label="Удалить услугу">${icon('trash')}</button>
+            <button class="icon-btn collapse-toggle-btn" title="Свернуть" aria-label="Свернуть или раскрыть услугу">${icon('chevronDown')}</button>
+          </div>
         </div>
-        <input class="service-price" type="text" placeholder="Цена, напр. от 1500 ₽" value="${escapeHtml(service.price || '')}" />
-        <button class="icon-btn danger remove-service-btn" title="Удалить услугу">${icon('trash')}</button>
-        <button class="icon-btn collapse-toggle-btn" title="Свернуть">${icon('chevronDown')}</button>
+        <div class="service-card-meta">
+          <label class="service-enabled-label" title="Участвует в генерации"><input class="service-enabled" type="checkbox" ${service.enabled !== false ? 'checked' : ''} /><span class="service-toggle" aria-hidden="true"></span><span class="service-enabled-text">${service.enabled !== false ? 'Включён' : 'Выключен'}</span></label>
+          <div class="service-meta-fields">
+            <div class="select-control">
+              <select class="service-avito-category" title="Категория Авито" aria-label="Категория Авито">${categoryOptions}</select>
+              <span class="select-control-icon" aria-hidden="true">${icon('chevronDown')}</span>
+            </div>
+            <input class="service-price" type="text" aria-label="Цена услуги" placeholder="Цена" value="${escapeHtml(service.price || '')}" />
+          </div>
+        </div>
       </div>
 
       <p class="service-collapsed-summary"></p>
 
       <div class="service-card-body">
+        <div class="template-field is-collapsed">
         <label class="field-label">${icon('fileText')} Заголовок</label>
         <div class="tpl-grow-wrap">
           <div class="tpl-backdrop" aria-hidden="true"></div>
           <textarea class="service-tpl-title" rows="2" placeholder="{Ремонт|Срочный ремонт} стиральных машин в [zone]">${escapeHtml(tpl.title)}</textarea>
+        </div>
         </div>
         <div class="field-footer">
           <p class="brace-status"></p>
           <p class="length-status" data-len="title"></p>
         </div>
 
+        <div class="template-field is-collapsed">
         <label class="field-label">${icon('fileText')} Текст объявления</label>
         <div class="tpl-grow-wrap">
           <div class="tpl-backdrop" aria-hidden="true"></div>
           <textarea class="service-tpl-text" rows="8" placeholder="{Мастер|Специалист} выезжает в [zone] в день обращения...">${escapeHtml(tpl.text)}</textarea>
         </div>
+        </div>
         <p class="brace-status"></p>
 
+        <div class="template-field is-collapsed">
         <label class="field-label">${icon('fileText')} SEO-хвост</label>
         <div class="tpl-grow-wrap">
           <div class="tpl-backdrop" aria-hidden="true"></div>
           <textarea class="service-tpl-seo" rows="5" placeholder="Ремонт стиральных машин [zone], мастер по стиральным машинам [zone]...">${escapeHtml(tpl.seo)}</textarea>
+        </div>
         </div>
         <div class="field-footer">
           <p class="brace-status"></p>
           <p class="length-status" data-len="body"></p>
         </div>
 
-        <label class="field-label">${icon('image')} Фото (закреплённые остаются на своей позиции)</label>
-        <div class="service-photos"></div>
-        <button type="button" class="btn secondary add-photo-btn">${icon('plus')} Добавить фото</button>
+        <span class="field-label">${icon('image')} Фото</span>
+        <div class="service-photos" role="list"></div>
+        <button type="button" class="btn secondary add-photo-btn">${icon('plus')} Добавить ссылку</button>
       </div>
     `;
 
@@ -157,6 +171,9 @@ function initServicesPanel(store, onChange) {
     });
     card.querySelector('.collapse-toggle-btn').addEventListener('click', () => {
       setCollapsed(card, !collapsedIds.has(card.dataset.id));
+    });
+    card.querySelector('.service-enabled').addEventListener('change', (event) => {
+      card.querySelector('.service-enabled-text').textContent = event.target.checked ? 'Включён' : 'Выключен';
     });
     const priceInput = card.querySelector('.service-price');
     priceInput.addEventListener('focus', () => {
@@ -172,22 +189,56 @@ function initServicesPanel(store, onChange) {
       el.addEventListener('change', save);
     });
     const photosBox = card.querySelector('.service-photos');
-    const rawPhotos = service.photos || [];
+    const addPhotoButton = card.querySelector('.add-photo-btn');
+    const updatePhotoRows = () => {
+      const rows = [...photosBox.querySelectorAll('.service-photo-row')];
+      rows.forEach((row, rowIndex) => {
+        row.querySelector('.service-photo-input').setAttribute('aria-label', `Ссылка на фото ${rowIndex + 1}`);
+      });
+    };
+    const rawPhotos = (service.photos || []).filter((photo) => {
+      const url = typeof photo === 'string' ? photo : photo?.url;
+      return String(url || '').trim();
+    });
     rawPhotos.forEach((photo, index) => addPhotoRow(typeof photo === 'string' ? { url: photo, pinned: false } : photo, index));
-    if (!rawPhotos.length) addPhotoRow({ url: '', pinned: false }, 0);
-    card.querySelector('.add-photo-btn').addEventListener('click', () => { addPhotoRow({ url: '', pinned: false }); save(); });
+    addPhotoButton.addEventListener('click', () => { addPhotoRow({ url: '', pinned: false }); save(); });
     function addPhotoRow(photo, index) {
       const row = document.createElement('div'); row.className = 'service-photo-row';
-      row.innerHTML = `<button type="button" class="icon-btn service-photo-pin" title="Закрепить позицию">${icon('pin')}</button><input class="service-photo-input" type="url" placeholder="https://disk.yandex.ru/..." value="${escapeHtml(photo.url || '')}"><button type="button" class="icon-btn danger remove-photo-btn" title="Удалить фото">${icon('trash')}</button>`;
+      row.setAttribute('role', 'listitem');
+      row.innerHTML = `<input class="service-photo-input" type="url" placeholder="Вставьте ссылку на фото" value="${escapeHtml(photo.url || '')}"><button type="button" class="service-photo-pin" aria-pressed="false"><i data-lucide="pin" aria-hidden="true"></i><span>Закрепить</span></button><button type="button" class="icon-btn danger remove-photo-btn" aria-label="Удалить фото" title="Удалить фото">${icon('trash')}</button>`;
       photosBox.appendChild(row);
-      row.querySelector('.service-photo-pin').classList.toggle('active', Boolean(photo.pinned));
-      row.querySelector('.service-photo-pin').addEventListener('click', () => { row.querySelector('.service-photo-pin').classList.toggle('active'); save(); });
-      row.querySelector('.remove-photo-btn').addEventListener('click', () => { row.remove(); save(); });
+      if (window.lucide) window.lucide.createIcons({ root: row });
+      const pinButton = row.querySelector('.service-photo-pin');
+      const setPinned = (pinned) => {
+        pinButton.classList.toggle('active', pinned);
+        pinButton.setAttribute('aria-pressed', String(pinned));
+        pinButton.querySelector('span').textContent = pinned ? 'Закреплено' : 'Закрепить';
+        pinButton.title = pinned ? 'Фото останется на этой позиции' : 'Закрепить фото на этой позиции';
+      };
+      setPinned(Boolean(photo.pinned));
+      pinButton.addEventListener('click', () => { setPinned(!pinButton.classList.contains('active')); save(); });
+      row.querySelector('.remove-photo-btn').addEventListener('click', () => { row.remove(); updatePhotoRows(); save(); });
       row.querySelector('.service-photo-input').addEventListener('input', save);
+      updatePhotoRows();
     }
     // Заголовок/текст/SEO — с подсветкой
     // скобок, у них своя автовысота через CSS-грид (см. braceHighlight.js).
     initBraceFieldsIn(card);
+    card.querySelectorAll('.template-field').forEach((field) => {
+      const textarea = field.querySelector('textarea');
+      const expand = () => {
+        field.classList.add('is-expanded');
+        field.classList.remove('is-collapsed');
+        window.requestAnimationFrame(() => autosize(textarea));
+      };
+      const collapse = () => {
+        field.classList.remove('is-expanded');
+        field.classList.add('is-collapsed');
+      };
+      textarea.addEventListener('focus', expand);
+      textarea.addEventListener('input', expand);
+      textarea.addEventListener('blur', collapse);
+    });
 
     const recompute = () => updateLengthCounters(card, store.districts);
     card

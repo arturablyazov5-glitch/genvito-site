@@ -41,7 +41,7 @@
           <i data-lucide="mail" aria-hidden="true"></i>
           <input id="login-email" type="email" placeholder="your@email.com" required autocomplete="email" />
         </div>
-        <button type="submit">Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+        <button type="submit" id="login-submit-btn">Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i></button>
       </form>
       <section class="login-code-step" id="login-code-step" hidden>
         <button class="login-back-btn" type="button" id="login-back-btn"><i data-lucide="arrow-left" aria-hidden="true"></i> Изменить email</button>
@@ -64,7 +64,7 @@
         <button class="login-register-btn" type="button" id="login-verify-btn" disabled>Подтвердить код</button>
       </section>
     </section>
-    <p class="login-note">Поддержка: <a href="mailto:genvito-team@ya.ru">genvito-team@ya.ru</a> / <a href="https://t.me/mansurov_rafael" target="_blank" rel="noopener noreferrer">Telegram</a></p>
+    <p class="login-note">Поддержка: <button type="button" data-copy-email="genvito-team@ya.ru">genvito-team@ya.ru</button> / <a href="https://t.me/mansurov_rafael" target="_blank" rel="noopener noreferrer">Telegram</a></p>
   </main>
 </div>
 <script src="https://unpkg.com/lucide@latest"></script>

@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=20260830-9" />
+<link rel="stylesheet" href="/css/styles.css?v=20260831-1" />
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -38,10 +38,12 @@
         <div class="select-control header-project-select">
           <span class="profile-bar-icon" id="folder-icon" aria-hidden="true"></span>
           <select class="service-avito-category" id="profile-select" title="Текущий проект"></select>
+          <button class="project-picker-trigger" id="project-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="project-picker-menu" id="project-picker-menu" role="listbox" hidden></div>
           <span class="select-control-icon" id="profile-select-chevron" aria-hidden="true"></span>
         </div>
-        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
         <button class="icon-btn" id="rename-profile-btn" type="button" title="Переименовать проект" aria-label="Переименовать проект"></button>
+        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
       </div>
       <span class="header-project-divider" aria-hidden="true"></span>
       <nav class="top-tabs" aria-label="Основные страницы">
@@ -98,6 +100,25 @@
 
 <div class="workspace"><main><div class="app-view active" id="cabinet-view">
     
+<section id="tab-districts" class="tab-panel">
+          <div class="panel-header">
+            <h2 id="districts-title"></h2>
+            <span class="saved-indicator" id="districts-saved"></span>
+          </div>
+          <p class="hint">
+            Название района подставляется вместо <code>[zone]</code> в шаблоне, адрес идёт в CSV отдельной колонкой
+          </p>
+          <div class="table-scroll">
+            <table class="districts-table">
+              <thead><tr><th>Район</th><th>Адрес</th><th></th></tr></thead>
+              <tbody id="districts-tbody"></tbody>
+            </table>
+          </div>
+          <div class="districts-toolbar">
+            <button class="btn secondary" id="add-district-btn"></button>
+            <p class="muted" id="districts-count"></p>
+          </div>
+        </section>
 <section id="tab-services" class="tab-panel active">
         <div class="services-main-card">
           <div class="panel-header">
@@ -143,6 +164,40 @@
         </section>
         </section>
 
+<section id="tab-generate" class="tab-panel">
+          <div class="panel-header">
+            <h2 id="generate-title"></h2>
+          </div>
+          <p class="hint">По каждому району будет создано отдельное объявление для каждой услуги. Сначала — статистика, файл скачивается отдельным шагом.</p>
+          <a class="profile-link-row generate-settings-link" href="/generate/settings">
+            <span class="profile-link-icon" id="profile-generation-icon"></span>
+            <span><strong>Настройки генерации</strong><small>Услуги, шаблоны и параметры объявлений</small></span>
+            <span class="row-arrow" id="profile-generation-arrow"></span>
+          </a>
+          <div class="generate-content-card">
+            <div class="ads-per-district-card">
+              <div class="ads-per-district-row">
+              <label class="field-label" for="ads-per-district-input" id="ads-per-district-label"></label>
+              <input type="number" id="ads-per-district-input" min="1" max="20" step="1" />
+              <span class="saved-indicator" id="ads-per-district-saved"></span>
+              </div>
+              <p class="ads-per-district-hint">Количество отдельных объявлений для каждого района и каждой услуги.</p>
+            </div>
+            <div class="generate-box">
+              <p class="generate-summary" id="generate-summary"></p>
+              <button class="btn primary" id="generate-btn"></button>
+              <p class="error-text" id="generate-error"></p>
+            </div>
+
+            <div class="generate-results" id="generate-results" hidden>
+              <div class="stats-grid" id="generate-stats"></div>
+              <div class="download-row">
+                <button class="btn primary" id="download-btn"></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
 </div></main></div>
 <div class="access-lock" id="access-lock" hidden><div class="access-lock-card"><div class="access-lock-icon"><i data-lucide="lock" aria-hidden="true"></i></div><h2>Доступ пока закрыт</h2><p>Активируйте пробный период или оплатите тариф, чтобы пользоваться генератором.</p><a class="btn primary" id="access-lock-action" href="/payment">Перейти к оплате</a></div></div>
 </div>
@@ -153,22 +208,23 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/pluralize.js"></script>
 <script src="/js/escapeHtml.js"></script>
-<script src="/js/api.js"></script>
+<script src="/js/api.js?v=20260831-2"></script>
 <script src="/js/autosave.js"></script>
 <script src="/js/autosize.js"></script>
 <script src="/js/braceHighlight.js"></script>
 <script src="/js/lengthLimits.js"></script>
 <script src="/js/avitoCategories.js"></script>
 <script src="/js/districtsPanel.js"></script>
-<script src="/js/servicesPanel.js?v=20260830-3"></script>
+<script src="/js/servicesPanel.js?v=20260831-2"></script>
 <script src="/js/generatePanel.js"></script>
 <script src="/js/profileBar.js"></script>
-<script src="/js/profileHistory.js"></script>
+<script src="/js/profileHistory.js?v=20260831-1"></script>
 <script src="/js/ui-init.js"></script>
-<script src="/js/main.js"></script>
+<script src="/js/cabinetNavigation.js?v=20260831-2"></script>
+<script src="/js/main.js?v=20260831-3"></script>
 
 <script src="/js/authHeader.js?v=20260830-7"></script>
-<script src="/js/profileSubscription.js?v=20260830-3"></script>
+<script src="/js/profileSubscription.js?v=20260831-3"></script>
 <script src="/js/profilePayments.js?v=20260830-2"></script>
 <script src="/js/accessLock.js?v=20260830-4"></script>
 </body>

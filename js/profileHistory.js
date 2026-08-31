@@ -2,10 +2,12 @@
   const list = document.getElementById('profile-history-list');
   if (!list) return;
   const client = window.__supabaseClient || (window.supabase && (window.__supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key)));
-  const { data: { user } = {} } = await client?.auth.getUser() || {};
+  const { data: sessionData } = await client?.auth.getSession() || {};
+  const user = sessionData?.session?.user;
   if (!user?.email) return;
-  const token = (await client.auth.getSession()).data.session?.access_token;
-  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/history?email=${encodeURIComponent(user.email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });
+  const token = sessionData?.session?.access_token || '';
+  const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/history?email=${encodeURIComponent(user.email)}`, { headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+  if (!response) return;
   const rows = await response.json().catch(() => []);
   if (!response.ok || !Array.isArray(rows) || rows.length === 0) return;
   list.innerHTML = rows.map((row) => {

@@ -7,6 +7,7 @@ const ICONS = {
   download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
   plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
   trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
+  pin: '<path d="M12 17v5"/><path d="M5 3h14l-2 6 2 2H5l2-2Z"/><path d="M12 11v6"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
   check: '<polyline points="20 6 9 17 4 12"/>',
   sparkles: '<path d="M9.94 14.06 4 16l5.94 1.94L12 24l1.94-6.06L20 16l-5.94-1.94L12 8Z"/><path d="M18 3v4"/><path d="M20 5h-4"/>',

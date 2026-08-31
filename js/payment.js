@@ -10,22 +10,58 @@ const paymentForm = document.getElementById('payment-form');
 const feedback = document.getElementById('checkout-feedback');
 const paymentButton = document.getElementById('pay-main-btn');
 const paymentTotalRow = document.getElementById('payment-total-row');
-const authClient = window.supabase?.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key);
-const { data: { user } = {} } = await authClient?.auth.getUser() || {};
+const authClient = window.__supabaseClient || (window.supabase && (window.__supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key)));
+const { data: sessionData } = await authClient?.auth.getSession() || {};
+const headerEmail = document.getElementById('account-email')?.textContent?.trim() || '';
+const user = sessionData?.session?.user || (headerEmail.includes('@') ? { email: headerEmail } : null);
 const signedIn = Boolean(user);
 const accountEmail = (user?.email || '').trim().toLowerCase();
-let trialUsed = false;
-if (accountEmail) {
-  const accountToken = (await authClient.auth.getSession()).data.session?.access_token;
-  const statusResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(accountEmail)}`, { headers: { Authorization: `Bearer ${accountToken || ''}` } });
-  const status = await statusResponse.json().catch(() => ({}));
-  trialUsed = Boolean(status.trialUsed);
-}
 const tariffs = document.getElementById('payment-tariffs');
-// Тарифы и идентификатор продукта Genvito для платёжного checkout.
 const CHECKOUT_ENDPOINT = `${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/checkout`;
 const CHECKOUT_PRODUCT_ID = '078103ba-9cc0-4cd8-8ed8-297b251039cf';
-const configResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/config`).catch(() => null);
+const projectAddonCheckout = new URLSearchParams(window.location.search).get('plan') === 'project-addon';
+let trialUsed = false;
+
+const tariff = (plan, price, note, selected = false, wide = false) => `<button class="tariff-card${selected ? ' selected' : ''}${wide ? ' tariff-card--wide' : ''}" type="button" data-plan="${plan}" data-price="${price}" role="radio" aria-checked="${selected}"><span class="tariff-name">${plan}</span><strong>${price.toLocaleString('ru-RU')} ₽</strong><small>${note}</small><span class="radio-circle${selected ? ' checked' : ''}">${selected ? icon('check') : ''}</span></button>`;
+function renderTariffs() {
+  const trialTariff = tariff('3 дня', 0, 'бесплатно', true, true);
+  const regularTariffs = tariff('1 месяц', 299, 'в месяц') + tariff('3 месяца', 799, '266 ₽ / мес (выгода 98 ₽)', trialUsed && !signedIn) + tariff('6 месяцев', 1490, '248 ₽ / мес (выгода 304 ₽)') + tariff('1 год', 2790, '233 ₽ / мес (выгода 798 ₽)');
+  const signedInTariffs = tariff('1 месяц', 299, 'в месяц', !trialUsed) + tariff('3 месяца', 799, '266 ₽ / мес (выгода 98 ₽)', trialUsed) + tariff('6 месяцев', 1490, '248 ₽ / мес (выгода 304 ₽)') + tariff('1 год', 2790, '233 ₽ / мес (выгода 798 ₽)');
+  tariffs.innerHTML = projectAddonCheckout
+    ? tariff('Дополнительный проект', 100, 'в месяц', true, true)
+    : trialUsed ? signedInTariffs : trialTariff + regularTariffs;
+}
+
+// Critical checkout UI must not wait for Supabase network requests.
+renderTariffs();
+if (signedIn) {
+  emailStep.hidden = true;
+  planStep.querySelector('.step-number').textContent = '1';
+  methodStep.querySelector('.step-number').textContent = '2';
+} else {
+  methodStep.querySelector('.step-number').textContent = '3';
+}
+
+async function fetchWithTimeout(url, options = {}, timeout = 2500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+if (accountEmail) {
+  const accountToken = sessionData?.session?.access_token || '';
+  const statusResponse = await fetchWithTimeout(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(accountEmail)}`, { headers: { Authorization: `Bearer ${accountToken || ''}` } });
+  const status = await statusResponse?.json().catch(() => ({}));
+  trialUsed = Boolean(status?.trialUsed);
+  renderTariffs();
+}
+const configResponse = await fetchWithTimeout(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/config`);
 const paymentConfig = configResponse?.ok ? await configResponse.json().catch(() => ({})) : {};
 const sbpMethod = document.getElementById('payment-method-sbp');
 if (sbpMethod && Array.isArray(paymentConfig.methods) && !paymentConfig.methods.includes('sbp')) sbpMethod.hidden = true;
@@ -58,15 +94,6 @@ function paymentErrorText(error) {
   return 'Не удалось создать ссылку на оплату. Попробуйте ещё раз.';
 }
 
-const tariff = (plan, price, note, selected = false, wide = false) => `<button class="tariff-card${selected ? ' selected' : ''}${wide ? ' tariff-card--wide' : ''}" type="button" data-plan="${plan}" data-price="${price}" role="radio" aria-checked="${selected}"><span class="tariff-name">${plan}</span><strong>${price.toLocaleString('ru-RU')} ₽</strong><small>${note}</small><span class="radio-circle${selected ? ' checked' : ''}">${selected ? icon('check') : ''}</span></button>`;
-const projectAddonCheckout = new URLSearchParams(window.location.search).get('plan') === 'project-addon';
-const trialTariff = tariff('3 дня', 0, 'бесплатно', true, true);
-const regularTariffs = tariff('1 месяц', 299, 'в месяц') + tariff('3 месяца', 799, '266 ₽ / мес (выгода 98 ₽)', trialUsed && !signedIn) + tariff('6 месяцев', 1490, '248 ₽ / мес (выгода 304 ₽)') + tariff('1 год', 2790, '233 ₽ / мес (выгода 798 ₽)');
-const signedInTariffs = tariff('1 месяц', 299, 'в месяц', !trialUsed) + tariff('3 месяца', 799, '266 ₽ / мес (выгода 98 ₽)', trialUsed) + tariff('6 месяцев', 1490, '248 ₽ / мес (выгода 304 ₽)') + tariff('1 год', 2790, '233 ₽ / мес (выгода 798 ₽)');
-
-tariffs.innerHTML = projectAddonCheckout
-  ? tariff('Дополнительный проект', 100, 'в месяц', true, true)
-  : trialUsed ? signedInTariffs : trialTariff + regularTariffs;
 const totalPrice = document.querySelector('#payment-submit-step .total-row strong');
 const paymentBenefit = document.getElementById('payment-benefit');
 const tariffBenefits = { '3 месяца': 98, '6 месяцев': 304, '1 год': 798 };
@@ -111,14 +138,6 @@ initRadioGroup(document, '.payment-method', (method) => {
 });
 if (!signedIn && totalPrice) totalPrice.textContent = '0 ₽';
 if (!signedIn && paymentBenefit) paymentBenefit.hidden = true;
-
-if (signedIn) {
-  emailStep.hidden = true;
-  planStep.querySelector('.step-number').textContent = '1';
-  methodStep.querySelector('.step-number').textContent = '2';
-} else {
-  methodStep.querySelector('.step-number').textContent = '3';
-}
 
 paymentForm.addEventListener('submit', async (event) => {
   event.preventDefault();

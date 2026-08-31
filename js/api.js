@@ -1,8 +1,16 @@
 // Тонкая обёртка над fetch — единственное место, знающее про HTTP-эндпоинты.
 
 const Api = {
-  profileUrl(path = '') { return `${window.SUPABASE_CONFIG?.url}/functions/v1/workspace-api/profiles${path}`; },
+  isLocal() {
+    return ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+  },
+  profileUrl(path = '') {
+    return this.isLocal()
+      ? `/api/profiles${path}`
+      : `${window.SUPABASE_CONFIG?.url}/functions/v1/workspace-api/profiles${path}`;
+  },
   functionUrl(path) {
+    if (this.isLocal()) return `/api/${path}`;
     const base = `${window.SUPABASE_CONFIG?.url}/functions/v1/workspace-api`;
     return `${base}/${path}`;
   },

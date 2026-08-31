@@ -1,6 +1,7 @@
 (async () => {
   const statusElement = document.getElementById('profile-subscription-status');
   if (!statusElement) return;
+  statusElement.textContent = 'Загрузка…';
   const authClient = window.__supabaseClient || (window.supabase && (window.__supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key)));
   const { data: { user } = {} } = await authClient?.auth.getUser() || {};
   const email = (user?.email || '').trim().toLowerCase();
@@ -13,9 +14,11 @@
   statusElement.textContent = active ? (trial ? 'Пробный период' : 'Подписка активна') : 'Подписка неактивна';
   const statusIcon = document.getElementById('profile-status-icon');
   if (statusIcon) {
+    statusIcon.classList.remove('is-loading');
     statusIcon.classList.toggle('is-active', active);
     statusIcon.innerHTML = icon(active ? 'circleCheck' : 'circleX');
   }
+  document.querySelector('.profile-subscription-card')?.classList.remove('is-loading');
   const renewButton = document.getElementById('profile-renew-btn');
   const cancelButton = document.getElementById('profile-cancel-btn');
   if (renewButton) {

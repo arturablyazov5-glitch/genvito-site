@@ -113,12 +113,16 @@ function initBraceField(wrap, statusEl) {
 function initBraceFieldsIn(root) {
   root.querySelectorAll('.tpl-grow-wrap').forEach((wrap) => {
     const next = wrap.nextElementSibling;
+    const field = wrap.closest('.template-field');
+    const fieldNext = field?.nextElementSibling;
     if (!next) return;
     // brace-status стоит либо сразу за полем, либо внутри .field-footer
     // рядом со счётчиком символов (см. servicesPanel.js).
-    const statusEl = next.classList.contains('brace-status')
+    const statusEl = next?.classList.contains('brace-status')
       ? next
-      : next.querySelector('.brace-status');
+      : next?.querySelector('.brace-status')
+        || fieldNext?.classList.contains('brace-status') && fieldNext
+        || fieldNext?.querySelector('.brace-status');
     if (statusEl) initBraceField(wrap, statusEl);
   });
 }

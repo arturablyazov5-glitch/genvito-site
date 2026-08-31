@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=20260830-9" />
+<link rel="stylesheet" href="/css/styles.css?v=20260831-1" />
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -38,10 +38,12 @@
         <div class="select-control header-project-select">
           <span class="profile-bar-icon" id="folder-icon" aria-hidden="true"></span>
           <select class="service-avito-category" id="profile-select" title="Текущий проект"></select>
+          <button class="project-picker-trigger" id="project-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="project-picker-menu" id="project-picker-menu" role="listbox" hidden></div>
           <span class="select-control-icon" id="profile-select-chevron" aria-hidden="true"></span>
         </div>
-        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
         <button class="icon-btn" id="rename-profile-btn" type="button" title="Переименовать проект" aria-label="Переименовать проект"></button>
+        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
       </div>
       <span class="header-project-divider" aria-hidden="true"></span>
       <nav class="top-tabs" aria-label="Основные страницы">
@@ -115,22 +117,23 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/pluralize.js"></script>
 <script src="/js/escapeHtml.js"></script>
-<script src="/js/api.js"></script>
+<script src="/js/api.js?v=20260831-2"></script>
 <script src="/js/autosave.js"></script>
 <script src="/js/autosize.js"></script>
 <script src="/js/braceHighlight.js"></script>
 <script src="/js/lengthLimits.js"></script>
 <script src="/js/avitoCategories.js"></script>
 <script src="/js/districtsPanel.js"></script>
-<script src="/js/servicesPanel.js?v=20260830-3"></script>
+<script src="/js/servicesPanel.js?v=20260831-2"></script>
 <script src="/js/generatePanel.js"></script>
 <script src="/js/profileBar.js"></script>
-<script src="/js/profileHistory.js"></script>
+<script src="/js/profileHistory.js?v=20260831-1"></script>
 <script src="/js/ui-init.js"></script>
-<script src="/js/main.js"></script>
+<script src="/js/cabinetNavigation.js?v=20260831-2"></script>
+<script src="/js/main.js?v=20260831-3"></script>
 
 <script src="/js/authHeader.js?v=20260830-7"></script>
-<script src="/js/profileSubscription.js?v=20260830-3"></script>
+<script src="/js/profileSubscription.js?v=20260831-3"></script>
 <script src="/js/profilePayments.js?v=20260830-2"></script>
 <script src="/js/accessLock.js?v=20260830-4"></script>
 </body>

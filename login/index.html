@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=20260830-9" />
+<link rel="stylesheet" href="/css/styles.css?v=20260831-1" />
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -30,10 +30,12 @@
         <div class="select-control header-project-select">
           <span class="profile-bar-icon" id="folder-icon" aria-hidden="true"></span>
           <select class="service-avito-category" id="profile-select" title="Текущий проект"></select>
+          <button class="project-picker-trigger" id="project-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="project-picker-menu" id="project-picker-menu" role="listbox" hidden></div>
           <span class="select-control-icon" id="profile-select-chevron" aria-hidden="true"></span>
         </div>
-        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
         <button class="icon-btn" id="rename-profile-btn" type="button" title="Переименовать проект" aria-label="Переименовать проект"></button>
+        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
       </div>
       <span class="header-project-divider" aria-hidden="true"></span>
       <nav class="top-tabs" aria-label="Основные страницы">
@@ -79,7 +81,7 @@
           <i data-lucide="mail" aria-hidden="true"></i>
           <input id="login-email" type="email" placeholder="your@email.com" required autocomplete="email" />
         </div>
-        <button type="submit">Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i></button>
+        <button type="submit" id="login-submit-btn">Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i></button>
       </form>
       <section class="login-code-step" id="login-code-step" hidden>
         <button class="login-back-btn" type="button" id="login-back-btn"><i data-lucide="arrow-left" aria-hidden="true"></i> Изменить email</button>
@@ -102,7 +104,7 @@
         <button class="login-register-btn" type="button" id="login-verify-btn" disabled>Подтвердить код</button>
       </section>
     </section>
-    <p class="login-note">Поддержка: <a href="mailto:genvito-team@ya.ru">genvito-team@ya.ru</a> / <a href="https://t.me/mansurov_rafael" target="_blank" rel="noopener noreferrer">Telegram</a></p>
+    <p class="login-note">Поддержка: <button type="button" data-copy-email="genvito-team@ya.ru">genvito-team@ya.ru</button> / <a href="https://t.me/mansurov_rafael" target="_blank" rel="noopener noreferrer">Telegram</a></p>
   </main></div><script>window.SUPABASE_CONFIG = {"url":"https://gvqlxjontunsnledozuk.supabase.co","key":"sb_publishable_7GYCCrrDtMbVr4_cTJnEhQ_jmFbgxXi"};</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/icons.js"></script>

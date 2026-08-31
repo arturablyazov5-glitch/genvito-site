@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=20260830-9" />
+<link rel="stylesheet" href="/css/styles.css?v=20260831-1" />
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -38,10 +38,12 @@
         <div class="select-control header-project-select">
           <span class="profile-bar-icon" id="folder-icon" aria-hidden="true"></span>
           <select class="service-avito-category" id="profile-select" title="Текущий проект"></select>
+          <button class="project-picker-trigger" id="project-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="project-picker-menu" id="project-picker-menu" role="listbox" hidden></div>
           <span class="select-control-icon" id="profile-select-chevron" aria-hidden="true"></span>
         </div>
-        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
         <button class="icon-btn" id="rename-profile-btn" type="button" title="Переименовать проект" aria-label="Переименовать проект"></button>
+        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
       </div>
       <span class="header-project-divider" aria-hidden="true"></span>
       <nav class="top-tabs" aria-label="Основные страницы">
@@ -98,6 +100,70 @@
 
 <div class="workspace"><main><div class="app-view active" id="cabinet-view">
     
+<section id="tab-districts" class="tab-panel">
+          <div class="panel-header">
+            <h2 id="districts-title"></h2>
+            <span class="saved-indicator" id="districts-saved"></span>
+          </div>
+          <p class="hint">
+            Название района подставляется вместо <code>[zone]</code> в шаблоне, адрес идёт в CSV отдельной колонкой
+          </p>
+          <div class="table-scroll">
+            <table class="districts-table">
+              <thead><tr><th>Район</th><th>Адрес</th><th></th></tr></thead>
+              <tbody id="districts-tbody"></tbody>
+            </table>
+          </div>
+          <div class="districts-toolbar">
+            <button class="btn secondary" id="add-district-btn"></button>
+            <p class="muted" id="districts-count"></p>
+          </div>
+        </section>
+<section id="tab-services" class="tab-panel">
+        <div class="services-main-card">
+          <div class="panel-header">
+            <h2 id="services-title"></h2>
+            <span class="saved-indicator" id="services-saved"></span>
+          </div>
+          <p class="hint">
+            У каждой услуги свой шаблон и свой набор фото. По каждой услуге создаётся
+            объявление на каждый район.
+          </p>
+          <div class="services-toolbar">
+            <button class="btn secondary" id="add-service-btn"></button>
+            <button class="btn secondary" id="toggle-all-services-btn"></button>
+          </div>
+          <div id="services-list"></div>
+        </div>
+        <section class="synonym-help">
+          <span class="synonym-help-heading"><span id="synonym-help-icon"></span><strong>Синтаксис синонимов</strong></span>
+          <p class="synonym-help-description">
+            В фигурных скобках перечислите варианты через <code>|</code>. При генерации
+            для каждого объявления выберется один вариант, а <code>[zone]</code> заменится
+            на район
+          </p>
+          <div class="synonym-examples">
+            <div class="synonym-example">
+              <span class="synonym-example-label"><i data-lucide="map-pin" aria-hidden="true"></i>Район</span>
+              <code>{Ремонт в районе [zone]|Мастер рядом с вами}</code>
+              <div class="synonym-example-results">
+                <span>→ Ремонт в районе Центрального</span>
+                <span>→ Мастер рядом с вами</span>
+              </div>
+            </div>
+            <div class="synonym-example">
+              <span class="synonym-example-label"><i data-lucide="layers-2" aria-hidden="true"></i>Вложенные варианты</span>
+              <code>{Ремонт {стиральных|посудомоечных} машин|Починка техники}</code>
+              <div class="synonym-example-results">
+                <span>→ Ремонт стиральных машин</span>
+                <span>→ Ремонт посудомоечных машин</span>
+                <span>→ Починка техники</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        </section>
+
 <section id="tab-generate" class="tab-panel active">
           <div class="panel-header">
             <h2 id="generate-title"></h2>
@@ -142,22 +208,23 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="/js/pluralize.js"></script>
 <script src="/js/escapeHtml.js"></script>
-<script src="/js/api.js"></script>
+<script src="/js/api.js?v=20260831-2"></script>
 <script src="/js/autosave.js"></script>
 <script src="/js/autosize.js"></script>
 <script src="/js/braceHighlight.js"></script>
 <script src="/js/lengthLimits.js"></script>
 <script src="/js/avitoCategories.js"></script>
 <script src="/js/districtsPanel.js"></script>
-<script src="/js/servicesPanel.js?v=20260830-3"></script>
+<script src="/js/servicesPanel.js?v=20260831-2"></script>
 <script src="/js/generatePanel.js"></script>
 <script src="/js/profileBar.js"></script>
-<script src="/js/profileHistory.js"></script>
+<script src="/js/profileHistory.js?v=20260831-1"></script>
 <script src="/js/ui-init.js"></script>
-<script src="/js/main.js"></script>
+<script src="/js/cabinetNavigation.js?v=20260831-2"></script>
+<script src="/js/main.js?v=20260831-3"></script>
 
 <script src="/js/authHeader.js?v=20260830-7"></script>
-<script src="/js/profileSubscription.js?v=20260830-3"></script>
+<script src="/js/profileSubscription.js?v=20260831-3"></script>
 <script src="/js/profilePayments.js?v=20260830-2"></script>
 <script src="/js/accessLock.js?v=20260830-4"></script>
 </body>

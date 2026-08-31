@@ -7,6 +7,7 @@ const codeEmail = document.getElementById('login-code-email');
 const codeError = document.getElementById('login-code-error');
 const codeInputs = [...document.querySelectorAll('.login-code-input')];
 const verifyButton = document.getElementById('login-verify-btn');
+const submitButton = document.getElementById('login-submit-btn');
 const resendButton = document.getElementById('login-resend-btn');
 let pendingEmail = '';
 let resendTimer;
@@ -33,6 +34,41 @@ function startResendTimer() {
 const supabaseConfig = window.SUPABASE_CONFIG;
 const supabaseClient = window.supabase?.createClient(supabaseConfig?.url, supabaseConfig?.key);
 
+document.querySelectorAll('[data-copy-email]').forEach((button) => button.addEventListener('click', async () => {
+  const email = button.dataset.copyEmail;
+  try {
+    await navigator.clipboard.writeText(email);
+  } catch {
+    const fallback = document.createElement('textarea');
+    fallback.value = email;
+    fallback.style.position = 'fixed';
+    fallback.style.opacity = '0';
+    document.body.append(fallback);
+    fallback.select();
+    document.execCommand('copy');
+    fallback.remove();
+  }
+  let toast = document.getElementById('copy-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'copy-toast';
+    toast.className = 'copy-toast';
+    document.body.append(toast);
+  }
+  toast.textContent = 'Почта скопирована';
+  toast.classList.add('visible');
+  clearTimeout(window.copyToastTimer);
+  window.copyToastTimer = setTimeout(() => toast.classList.remove('visible'), 1800);
+}));
+
+function setButtonLoading(button, loading, label, idleMarkup) {
+  button.disabled = loading;
+  button.setAttribute('aria-busy', String(loading));
+  button.innerHTML = loading
+    ? `<span class="login-spinner" aria-hidden="true"></span>${label}`
+    : idleMarkup;
+}
+
 // Приложение работает локально и не подключено к почтовому провайдеру.
 // Нет фиктивного списка пользователей и «универсального» кода.
 loginForm.addEventListener('submit', async (event) => {
@@ -42,9 +78,17 @@ loginForm.addEventListener('submit', async (event) => {
     return;
   }
   pendingEmail = loginEmail.value.trim().toLowerCase();
-  if (!supabaseClient) return showError('Сервис входа временно недоступен.');
+  setButtonLoading(submitButton, true, 'Отправляю…', 'Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i>');
+  if (!supabaseClient) {
+    setButtonLoading(submitButton, false, '', 'Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i>');
+    return showError('Сервис входа временно недоступен.');
+  }
   const { error } = await supabaseClient.auth.signInWithOtp({ email: pendingEmail });
-  if (error) return showError('Не удалось отправить код. Попробуйте ещё раз.');
+  if (error) {
+    setButtonLoading(submitButton, false, '', 'Продолжить <i data-lucide="arrow-right" aria-hidden="true"></i>');
+    if (window.lucide) lucide.createIcons();
+    return showError('Не удалось отправить код. Попробуйте ещё раз.');
+  }
   loginForm.hidden = true;
   document.querySelector('.login-initial-content').hidden = true;
   codeStep.hidden = false;
@@ -88,10 +132,10 @@ verifyButton.addEventListener('click', async () => {
     codeError.hidden = false;
     return;
   }
-  verifyButton.disabled = true;
+  setButtonLoading(verifyButton, true, 'Проверяю код…', 'Подтвердить код');
   const { data, error } = await supabaseClient.auth.verifyOtp({ email: pendingEmail, token, type: 'email' });
-  verifyButton.disabled = false;
   if (error || !data.session) {
+    setButtonLoading(verifyButton, false, '', 'Подтвердить код');
     codeError.textContent = 'Неверный или просроченный код.';
     codeError.hidden = false;
     return;

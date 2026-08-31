@@ -5,7 +5,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/styles.css?v=20260830-9" />
+<link rel="stylesheet" href="/css/styles.css?v=20260831-1" />
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
@@ -30,10 +30,12 @@
         <div class="select-control header-project-select">
           <span class="profile-bar-icon" id="folder-icon" aria-hidden="true"></span>
           <select class="service-avito-category" id="profile-select" title="Текущий проект"></select>
+          <button class="project-picker-trigger" id="project-picker-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div class="project-picker-menu" id="project-picker-menu" role="listbox" hidden></div>
           <span class="select-control-icon" id="profile-select-chevron" aria-hidden="true"></span>
         </div>
-        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
         <button class="icon-btn" id="rename-profile-btn" type="button" title="Переименовать проект" aria-label="Переименовать проект"></button>
+        <button class="icon-btn" id="new-profile-btn" type="button" title="Новый проект" aria-label="Новый проект"></button>
       </div>
       <span class="header-project-divider" aria-hidden="true"></span>
       <nav class="top-tabs" aria-label="Основные страницы">
@@ -87,7 +89,8 @@
           <div class="sbp-card payment-method" id="payment-method-sbp" data-method="sbp" role="radio" aria-checked="false" tabindex="0"><span class="sbp-logo"><img src="/assets/sbp-full.svg" alt="СБП"></span><span class="payment-divider"></span><span class="payment-method-copy"><strong>СБП</strong><small>Оплата по QR-коду без сохранения способа</small></span><span class="radio-circle"></span></div>
         </div>
       </section>
-      <section class="checkout-total" id="payment-submit-step"><div class="total-row" id="payment-total-row"><span>К оплате</span><div class="total-amount"><strong id="payment-total">299 ₽</strong><small id="payment-benefit" hidden></small></div></div><button class="btn primary checkout-pay-btn" type="submit" id="pay-main-btn">Перейти к оплате <i data-lucide="arrow-right" aria-hidden="true"></i></button><p class="checkout-feedback" id="checkout-feedback" role="status"></p><p class="checkout-legal">При оплате платного тарифа способ оплаты сохраняется для автопродления. Отключить его можно в профиле. Нажимая кнопку, вы соглашаетесь с <a href="/legal/offer" target="_blank" rel="noopener noreferrer">условиями использования сервиса</a> и <a href="/legal/contacts" target="_blank" rel="noopener noreferrer">правовой информацией</a>.</p></section>
+      <section class="checkout-total" id="payment-submit-step"><div class="total-row" id="payment-total-row"><span>К оплате</span><div class="total-amount"><strong id="payment-total">299 ₽</strong><small id="payment-benefit" hidden></small></div></div><button class="btn primary checkout-pay-btn" type="submit" id="pay-main-btn">Перейти к оплате <i data-lucide="arrow-right" aria-hidden="true"></i></button><p class="checkout-feedback" id="checkout-feedback" role="status"></p><p class="checkout-legal checkout-consent">Нажимая кнопку, вы соглашаетесь с <a href="/legal/offer" target="_blank" rel="noopener noreferrer">условиями использования сервиса</a> и <a href="/legal/contacts" target="_blank" rel="noopener noreferrer">правовой информацией</a>.</p></section>
+      <p class="checkout-legal checkout-autorenew-note">При оплате платного тарифа способ оплаты сохраняется для автопродления. Отключить его можно в профиле.</p>
     </form>
   </main></div><script src="/js/icons.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -96,4 +99,4 @@
 <script>window.SUPABASE_CONFIG = {"url":"https://gvqlxjontunsnledozuk.supabase.co","key":"sb_publishable_7GYCCrrDtMbVr4_cTJnEhQ_jmFbgxXi"};</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/authHeader.js?v=20260830-6"></script>
-<script src="/js/payment.js?v=20260830-18"></script></body></html>
+<script src="/js/payment.js?v=20260831-3"></script></body></html>

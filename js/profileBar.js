@@ -9,6 +9,8 @@ async function initProfileBar() {
   const newBtn = document.getElementById('new-profile-btn');
   const renameBtn = document.getElementById('rename-profile-btn');
   const deleteBtn = document.getElementById('delete-profile-btn');
+  const pickerTrigger = document.getElementById('project-picker-trigger');
+  const pickerMenu = document.getElementById('project-picker-menu');
 
   if (!select || !newBtn || !renameBtn) return;
   document.body.dataset.profileBarInitialized = 'true';
@@ -60,7 +62,30 @@ async function initProfileBar() {
     select.innerHTML = list
       .map((p) => `<option value="${escapeHtml(p.id)}" ${p.id === active ? 'selected' : ''}>${escapeHtml(p.name)}</option>`)
       .join('');
+    const activeProfile = list.find((p) => p.id === active);
+    if (pickerTrigger) pickerTrigger.textContent = activeProfile?.name || '';
+    if (pickerMenu) {
+      pickerMenu.innerHTML = list.map((p) => `<button type="button" class="project-picker-option${p.id === active ? ' selected' : ''}" data-profile-id="${escapeHtml(p.id)}" role="option" aria-selected="${p.id === active}">${escapeHtml(p.name)}</button>`).join('');
+      pickerMenu.querySelectorAll('.project-picker-option').forEach((option) => option.addEventListener('click', () => {
+        select.value = option.dataset.profileId;
+        select.dispatchEvent(new Event('change'));
+        closePicker();
+      }));
+    }
   }
+
+  function closePicker() {
+    if (!pickerMenu || !pickerTrigger) return;
+    pickerMenu.hidden = true;
+    pickerTrigger.setAttribute('aria-expanded', 'false');
+  }
+
+  pickerTrigger?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    pickerMenu.hidden = !pickerMenu.hidden;
+    pickerTrigger.setAttribute('aria-expanded', String(!pickerMenu.hidden));
+  });
+  document.addEventListener('click', closePicker);
 
   function openProjectModal(title, initialValue, submit) {
     const modal = document.getElementById('project-modal');
@@ -103,8 +128,27 @@ async function initProfileBar() {
       return;
     }
     window.activeProfileId = select.value;
-    await Api.activateProfile(select.value);
-    location.reload();
+    const selectedProfile = profiles.find((profile) => profile.id === select.value);
+    const originalLabel = selectedProfile?.name || pickerTrigger?.textContent || '';
+    select.disabled = true;
+    if (pickerTrigger) {
+      pickerTrigger.disabled = true;
+      pickerTrigger.classList.add('is-loading');
+      pickerTrigger.textContent = 'Загрузка…';
+    }
+    closePicker();
+    try {
+      await Api.activateProfile(select.value);
+      location.reload();
+    } catch (error) {
+      select.disabled = false;
+      if (pickerTrigger) {
+        pickerTrigger.disabled = false;
+        pickerTrigger.classList.remove('is-loading');
+        pickerTrigger.textContent = originalLabel;
+      }
+      console.error('Не удалось переключить проект:', error);
+    }
   });
 
   newBtn.addEventListener('click', async () => {
