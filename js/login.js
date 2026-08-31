@@ -37,6 +37,9 @@ const supabaseConfig = window.SUPABASE_CONFIG;
 const supabaseClient = window.supabase?.createClient(supabaseConfig?.url, supabaseConfig?.key, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
 });
+supabaseClient?.auth.getSession().then(({ data }) => {
+  if (data?.session?.user?.email) window.location.replace('/app/districts');
+});
 async function logRegistrationEvent(event_type, details = {}) {
   try { const { data } = await supabaseClient?.auth.getSession() || {}; const token = data?.session?.access_token; if (token) await fetch(`${supabaseConfig.url}/functions/v1/registration-log`, { method:'POST', headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({event_type,details}) }); } catch {}
 }

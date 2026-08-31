@@ -44,8 +44,14 @@ function showLogout(element) {
   const email = sessionData?.session?.user?.email;
   document.body.classList.toggle('account-pending', !email);
   const sidebarLogout = document.getElementById('sidebar-logout-btn');
-  const adminTab = document.getElementById('tab-btn-admin');
-  if (adminTab) adminTab.hidden = String(email || '').toLowerCase() !== 'sixxset@ya.ru';
+  if (String(email || '').toLowerCase() === 'sixxset@ya.ru' && !document.getElementById('tab-btn-admin')) {
+    const adminTab = document.createElement('a');
+    adminTab.className = 'tab-btn admin-only';
+    adminTab.href = '/app/admin/registrations';
+    adminTab.id = 'tab-btn-admin';
+    adminTab.textContent = 'Админка';
+    document.querySelector('.side-tabs')?.append(adminTab);
+  }
   const headerLogout = document.getElementById('logout-view-btn');
   if (email) {
     showLogout(sidebarLogout);
