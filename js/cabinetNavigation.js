@@ -2,9 +2,9 @@
 // уже есть в DOM и используют один загруженный workspace.
 
 const CABINET_ROUTES = {
-  '/districts': 'districts',
-  '/services': 'services',
-  '/generate': 'generate'
+  '/app/districts': 'districts',
+  '/app/services': 'services',
+  '/app/generate': 'generate'
 };
 
 function cabinetSectionFromPath(pathname = location.pathname) {

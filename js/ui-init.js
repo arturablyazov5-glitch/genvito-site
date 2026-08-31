@@ -5,7 +5,7 @@ function setInnerHTML(id, html) {
 
 function initBackToCabinet(selector = '[data-back-to-cabinet]') {
   document.querySelectorAll(selector).forEach((element) => {
-    element.href = '/districts';
+    element.href = '/app/districts';
     element.innerHTML = icon('arrowLeft') + ' Назад в кабинет';
   });
 }
@@ -56,7 +56,7 @@ function initBackToCabinet(selector = '[data-back-to-cabinet]') {
   setInnerHTML('profile-refresh-icon', icon('refreshCw'))
   initBackToCabinet()
   const referralBackButton = document.getElementById('referral-back-btn')
-  if (referralBackButton) referralBackButton.href = '/profile'
+  if (referralBackButton) referralBackButton.href = '/app/profile'
   setInnerHTML('referral-copy-btn', icon('copy') + ' Пока не работает')
   document.getElementById('referral-copy-btn')?.setAttribute('disabled', 'disabled')
   setInnerHTML('referral-users-icon', icon('users'))

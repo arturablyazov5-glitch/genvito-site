@@ -7,7 +7,7 @@ const supabaseClient = window.__supabaseClient || (window.supabase && (window.__
   const email = data?.user?.email;
   if (!email) {
     if (location.hostname === 'localhost' && (new URLSearchParams(location.search).has('demo-card') || sessionStorage.getItem('genvito-demo-card') === '1')) return;
-    return window.location.replace('/login');
+    return window.location.replace('/app/login');
   }
   const token = (await supabaseClient.auth.getSession()).data.session?.access_token;
   const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(email)}`, { headers: { Authorization: `Bearer ${token || ''}` } });

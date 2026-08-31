@@ -1,0 +1,14 @@
+body.landing-active .neo-top-nav{background:#fbfbfd;border-bottom:1px solid #e8eaf1}
+html:has(body.landing-active){scroll-behavior:smooth}
+body.landing-active #features,body.landing-active #how,body.landing-active #pricing{scroll-margin-top:92px}
+body.landing-active .neo-header-inner{max-width:none;width:calc(100% - 96px);padding:0 44px;box-sizing:border-box}
+.landing-top-tabs{gap:10px!important;margin-left:auto!important}.landing-top-tabs .landing-login-tab{display:inline-flex;align-items:center;gap:8px;background:#3157e8;color:#fff;border-color:#3157e8;padding:12px 18px;border-radius:100px}.landing-user-icon{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.features-cta{text-align:center;margin:-82px auto 90px}.features-cta .landing-cta{display:inline-flex}
+.landing-stats{grid-template-columns:repeat(3,1fr)}
+.feature-grid .feature-accent{background:#fff;color:var(--ink);border-color:#e8eaf1}.feature-accent .feature-num,.feature-accent a{color:var(--blue)}.feature-accent p{color:var(--muted)}
+@media(max-width:800px){.landing-stats{grid-template-columns:repeat(2,1fr)}}
+
+.feature-num{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#e9edff}.feature-num svg{width:16px;height:16px;stroke:currentColor;stroke-width:2}.feature-accent .feature-num{background:#e9edff}
+.hero-visual{min-height:540px}.pipeline-card{width:min(100%,470px);padding:28px;border-radius:24px;box-shadow:0 28px 70px #1d2a6822}.pipeline-row{padding:18px 0}.pipeline-foot{margin:20px -28px -28px;padding:18px 28px}.pipeline-top{font-size:12px}.pipeline-row strong{font-size:14px}.pipeline-row small{font-size:12px}
+.hero-visual:before{content:'ОДНА УСЛУГА  →  МНОГО ВАРИАНТОВ';position:absolute;top:38px;left:50%;transform:translateX(-50%);white-space:nowrap;color:#3157e8;font-size:11px;font-weight:700;letter-spacing:.14em}
+.landing-page .btn.primary.landing-cta{min-height:40px;padding:0 16px;border:0;border-radius:999px;gap:8px;font-size:14px;font-weight:600;background:var(--blue);box-shadow:none}.landing-page .btn.primary.landing-cta:hover{background:var(--blue-hover)}.landing-page .landing-cta span{font-size:16px;font-weight:400}

@@ -171,7 +171,7 @@ paymentForm.addEventListener('submit', async (event) => {
     paymentButton.disabled = true;
     paymentButton.textContent = 'Пробный период активирован';
     setTimeout(() => {
-      window.location.href = signedIn ? '/generate' : `/login?email=${encodeURIComponent(trialEmail)}`;
+      window.location.href = signedIn ? '/app/generate' : `/app/login?email=${encodeURIComponent(trialEmail)}`;
     }, 500);
     return;
   }

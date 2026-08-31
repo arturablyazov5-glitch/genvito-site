@@ -6,7 +6,7 @@ function bindLogout(element) {
   element.addEventListener('click', async (event) => {
     event.preventDefault();
     await authHeaderClient?.auth.signOut();
-    window.location.replace('/login');
+    window.location.replace('/app/login');
   });
 }
 
@@ -16,12 +16,12 @@ function showLogin(element) {
   const freshElement = document.getElementById(element.id);
   freshElement.innerHTML = icon('logIn') + (freshElement.id === 'sidebar-logout-btn' ? ' Войти' : '');
   freshElement.removeAttribute('onclick');
-  freshElement.href = '/login';
+  freshElement.href = '/app/login';
   freshElement.title = 'Войти';
   freshElement.setAttribute('aria-label', 'Войти');
   freshElement.addEventListener('click', (event) => {
     event.preventDefault();
-    window.location.replace('/login');
+    window.location.replace('/app/login');
   });
 }
 
@@ -44,6 +44,8 @@ function showLogout(element) {
   const email = sessionData?.session?.user?.email;
   document.body.classList.toggle('account-pending', !email);
   const sidebarLogout = document.getElementById('sidebar-logout-btn');
+  const adminTab = document.getElementById('tab-btn-admin');
+  if (adminTab) adminTab.hidden = String(user.email || '').toLowerCase() !== 'sixxset@ya.ru';
   const headerLogout = document.getElementById('logout-view-btn');
   if (email) {
     showLogout(sidebarLogout);
@@ -52,7 +54,10 @@ function showLogout(element) {
   const localDemoPage = location.hostname === 'localhost' && (new URLSearchParams(location.search).has('demo-card') || sessionStorage.getItem('genvito-demo-card') === '1');
   if (localDemoPage) sessionStorage.setItem('genvito-demo-card', '1');
   if (!email && !sessionError && !localDemoPage && !document.body.classList.contains('login-active') && !document.body.classList.contains('payment-active')) {
-    window.setTimeout(() => window.location.replace('/login'), 250);
+    window.setTimeout(async () => {
+      const { data: restored } = await authHeaderClient?.auth.getSession() || {};
+      if (!restored?.session) window.location.replace('/app/login');
+    }, 1500);
     return;
   }
   document.querySelectorAll('#account-email, #profile-email').forEach((element) => {

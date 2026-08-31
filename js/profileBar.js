@@ -36,7 +36,7 @@ async function initProfileBar() {
     document.getElementById('project-access-message').textContent = 'Переключение между проектами доступно после оплаты подписки.';
     const paymentLink = accessModal.querySelector('.project-modal-actions a');
     if (paymentLink) {
-      paymentLink.href = '/payment';
+      paymentLink.href = '/app/payment';
       paymentLink.textContent = 'Оплатить подписку';
     }
     accessModal.hidden = false;
@@ -48,7 +48,7 @@ async function initProfileBar() {
     document.getElementById('project-access-message').textContent = 'До 5 проектов включено в аккаунт. Дополнительный проект — 100 ₽ в месяц.';
     const paymentLink = accessModal.querySelector('.project-modal-actions a');
     if (paymentLink) {
-      paymentLink.href = '/payment?plan=project-addon';
+      paymentLink.href = '/app/payment?plan=project-addon';
       paymentLink.textContent = 'Докупить проект';
     }
     accessModal.hidden = false;

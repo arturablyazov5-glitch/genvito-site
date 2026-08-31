@@ -11,13 +11,13 @@
   const paymentId = new URLSearchParams(location.search).get('payment_id') || pending.paymentId || '';
   const hasPaymentReference = Boolean(paymentId || checkoutToken);
   const authClient = window.supabase?.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key);
-  cabinet.href = '/login';
+  cabinet.href = '/app/login';
   cabinet.textContent = 'Войти в кабинет';
   // A delayed auth request must never hold the payment confirmation screen.
   // The payment-status endpoint uses the checkout token and can be verified
   // without the browser session.
   authClient?.auth.getUser().then(({ data: { user } = {} } = {}) => {
-    cabinet.href = user ? '/profile' : '/login';
+    cabinet.href = user ? '/app/profile' : '/app/login';
     cabinet.textContent = user ? 'Перейти в кабинет' : 'Войти в кабинет';
   }).catch(() => {});
 

@@ -11,6 +11,8 @@ const submitButton = document.getElementById('login-submit-btn');
 const resendButton = document.getElementById('login-resend-btn');
 let pendingEmail = '';
 let resendTimer;
+let codeIssuedAt = 0;
+const CODE_TTL_MS = 60 * 1000;
 function updateVerifyButton() {
   const complete = codeInputs.every((field) => field.value);
   verifyButton.disabled = !complete;
@@ -32,7 +34,12 @@ function startResendTimer() {
   }, 1000);
 }
 const supabaseConfig = window.SUPABASE_CONFIG;
-const supabaseClient = window.supabase?.createClient(supabaseConfig?.url, supabaseConfig?.key);
+const supabaseClient = window.supabase?.createClient(supabaseConfig?.url, supabaseConfig?.key, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+async function logRegistrationEvent(event_type, details = {}) {
+  try { const { data } = await supabaseClient?.auth.getSession() || {}; const token = data?.session?.access_token; if (token) await fetch(`${supabaseConfig.url}/functions/v1/registration-log`, { method:'POST', headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json'}, body:JSON.stringify({event_type,details}) }); } catch {}
+}
 
 document.querySelectorAll('[data-copy-email]').forEach((button) => button.addEventListener('click', async () => {
   const email = button.dataset.copyEmail;
@@ -93,6 +100,7 @@ loginForm.addEventListener('submit', async (event) => {
   document.querySelector('.login-initial-content').hidden = true;
   codeStep.hidden = false;
   codeEmail.textContent = pendingEmail;
+  codeIssuedAt = Date.now();
   codeInputs[0].focus();
   startResendTimer();
 });
@@ -132,6 +140,14 @@ verifyButton.addEventListener('click', async () => {
     codeError.hidden = false;
     return;
   }
+  if (!codeIssuedAt || Date.now() - codeIssuedAt >= CODE_TTL_MS) {
+    setButtonLoading(verifyButton, false, '', 'Подтвердить код');
+    codeError.textContent = 'Срок действия кода истёк. Запросите новый код.';
+    codeError.hidden = false;
+    resendButton.disabled = false;
+    resendButton.textContent = 'Отправить код ещё раз';
+    return;
+  }
   setButtonLoading(verifyButton, true, 'Проверяю код…', 'Подтвердить код');
   const { data, error } = await supabaseClient.auth.verifyOtp({ email: pendingEmail, token, type: 'email' });
   if (error || !data.session) {
@@ -140,6 +156,7 @@ verifyButton.addEventListener('click', async () => {
     codeError.hidden = false;
     return;
   }
+  await logRegistrationEvent('otp_verified');
   // Supabase uses the same OTP flow for registration and repeat login. The
   // user's creation timestamp is the only signal returned by verifyOtp that
   // lets the client distinguish a freshly created account here.
@@ -151,16 +168,20 @@ verifyButton.addEventListener('click', async () => {
       headers: { Authorization: `Bearer ${data.session.access_token}` }
     }).catch(() => {});
   }
-  window.location.href = '/';
+  window.location.href = '/app/districts';
 });
 
 resendButton.addEventListener('click', async () => {
   resendButton.disabled = true;
+  codeInputs.forEach((input) => { input.value = ''; });
+  updateVerifyButton();
+  codeError.hidden = true;
   const { error } = await supabaseClient.auth.signInWithOtp({ email: pendingEmail });
   if (error) {
     codeError.textContent = 'Не удалось отправить код повторно. Попробуйте позже.';
     codeError.hidden = false;
   }
+  codeIssuedAt = Date.now();
   startResendTimer();
 });
 
