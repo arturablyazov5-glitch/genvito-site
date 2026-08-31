@@ -30,7 +30,18 @@ function setCabinetSection(section, { updateHistory = false } = {}) {
 function initCabinetNavigation() {
   if (!document.getElementById('tab-districts') || !document.getElementById('tab-services') || !document.getElementById('tab-generate')) return;
 
-  // Each cabinet tab has its own static page. Keep the browser's native
-  // navigation so the URL and the rendered page cannot get out of sync.
+  document.querySelector('.sidebar')?.addEventListener('click', (event) => {
+    const link = event.target.closest('.tab-btn');
+    const section = link && cabinetSectionFromPath(new URL(link.href, location.origin).pathname);
+    if (!section || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    setCabinetSection(section, { updateHistory: true });
+  });
+
+  window.addEventListener('popstate', () => {
+    const section = cabinetSectionFromPath();
+    if (section) setCabinetSection(section);
+  });
+
   setCabinetSection(cabinetSectionFromPath() || 'districts');
 }

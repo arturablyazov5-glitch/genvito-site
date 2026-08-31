@@ -1175,7 +1175,7 @@ body.generate-active .cabinet-heading {
 
 .service-card {
   margin-bottom: 12px;
-  padding: 16px 18px 14px;
+  padding: 14px 16px;
   border: 0;
   border-radius: 18px;
   background: var(--soft);
@@ -1192,9 +1192,16 @@ body.generate-active .cabinet-heading {
   transform: translateY(-1px);
 }
 
+.service-card:has(.service-actions-menu[open]) {
+  position: relative;
+  z-index: 30;
+}
+
 .service-card-header {
   display: grid;
-  gap: 12px;
+  grid-template-columns: minmax(220px, 1fr) minmax(320px, 1.35fr) auto;
+  align-items: center;
+  gap: 12px 18px;
   min-width: 0;
   margin-bottom: 14px;
 }
@@ -1207,10 +1214,10 @@ body.generate-active .cabinet-heading {
   align-items: center;
 }
 
-.service-card-primary { gap: 12px; }
-.service-card-meta { justify-content: space-between; gap: 18px; }
+.service-card-primary { gap: 12px; min-width: 0; }
+.service-card-meta { min-width: 0; }
 .service-card-actions { gap: 4px; flex-shrink: 0; }
-.service-meta-fields { gap: 8px; min-width: 0; }
+.service-meta-fields { width: 100%; gap: 8px; min-width: 0; }
 
 .service-card-actions .icon-btn {
   width: 32px;
@@ -1220,9 +1227,20 @@ body.generate-active .cabinet-heading {
 }
 
 .service-card-actions .icon-btn:hover { background: var(--surface); }
-.service-card-actions .remove-service-btn { opacity: .58; }
-.service-card:hover .remove-service-btn,
-.service-card-actions .remove-service-btn:focus-visible { opacity: 1; }
+
+.service-actions-menu { position: relative; z-index: 40; }
+.service-actions-menu > summary { display: grid; place-items: center; list-style: none; cursor: pointer; }
+.service-actions-menu > summary::-webkit-details-marker { display: none; }
+.service-actions-menu[open] > summary { background: var(--surface); }
+.service-actions-popover { position: absolute; top: calc(100% + 6px); right: 0; z-index: 50; width: 178px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 12px 28px rgba(20, 24, 32, .14); }
+.service-actions-popover button { display: flex; width: 100%; align-items: center; gap: 8px; padding: 9px 10px; border: 0; border-radius: 8px; background: transparent; color: var(--text); font: inherit; font-size: 13px; text-align: left; cursor: pointer; }
+.service-actions-popover button:hover { background: var(--soft); }
+.service-actions-popover button:disabled { color: #b0b0b5; cursor: default; }
+.service-actions-popover button:disabled:hover { background: transparent; }
+.service-actions-popover .remove-service-btn { color: var(--danger); }
+.service-actions-popover .remove-service-btn:hover { background: #fff1f1; }
+.service-actions-divider { height: 1px; margin: 5px 4px; background: var(--line); }
+.service-actions-popover .icon { width: 15px; height: 15px; }
 
 .service-card-primary .service-name {
   height: auto;
@@ -1230,7 +1248,7 @@ body.generate-active .cabinet-heading {
   border-color: transparent;
   border-radius: 0;
   background: transparent;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 650;
   letter-spacing: -.025em;
 }
@@ -1259,16 +1277,17 @@ body.generate-active .cabinet-heading {
 }
 
 .service-card.collapsed .service-card-header {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .service-collapsed-summary {
   display: none;
-  margin: 0;
-  padding-top: 10px;
+  margin: 10px 0 0;
+  padding: 9px 11px 0;
   border-top: 1px solid rgba(29, 29, 31, .08);
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 550;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1315,8 +1334,8 @@ textarea {
 
 .select-control {
   position: relative;
-  min-width: 220px;
-  flex: 0 1 310px;
+  min-width: 180px;
+  flex: 1 1 260px;
 }
 
 .profile-bar .header-project-select {
@@ -1431,7 +1450,7 @@ textarea:focus {
   transition: max-height .25s ease;
 }
 .template-field.is-collapsed .tpl-grow-wrap { max-height: calc(3 * 1.5em + 26px); overflow: hidden; }
-.template-field.is-expanded .tpl-grow-wrap { max-height: 2000px; overflow: hidden; }
+.template-field.is-expanded .tpl-grow-wrap { max-height: none; overflow: visible; }
 .template-expand-btn { position: absolute; right: 10px; bottom: 6px; z-index: 3; display: block; margin: 0; padding: 3px 7px; border: 0; border-radius: 100px; background: #111; color: #fff; font-size: 12px; font-weight: 600; text-decoration: none; cursor: pointer; transition: background .15s ease, transform .15s ease; }
 .template-expand-btn:hover { background: #2c2c2e; color: #fff; transform: translateY(-1px); }
 
@@ -2541,7 +2560,23 @@ textarea:focus {
     flex-direction: column;
   }
 
+  .service-card-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .service-card-primary {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  .service-card-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .service-card-meta {
+    grid-column: 1 / -1;
     align-items: stretch;
     flex-direction: column;
     gap: 10px;

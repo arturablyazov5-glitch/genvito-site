@@ -12,6 +12,9 @@
   if (!response.ok || !Array.isArray(rows) || rows.length === 0) return;
   list.innerHTML = rows.map((row) => {
     const date = new Date(row.paid_at || row.received_at).toLocaleString('ru-RU', { dateStyle: 'long', timeStyle: 'short' });
-    return `<div class="history-row"><div><strong>Оплата подписки${row.plan ? ` на ${escapeHtml(row.plan)}` : ''}</strong><small>${date}</small></div><strong>${escapeHtml(row.amount ? `${row.amount} ₽` : '—')}</strong></div>`;
+    const trial = row.event_type === 'payment_method.active';
+    const title = trial ? 'Активация пробного периода' : `Оплата подписки${row.plan ? ` на ${escapeHtml(row.plan)}` : ''}`;
+    const amount = trial ? '0 ₽' : row.amount != null ? `${row.amount} ₽` : '—';
+    return `<div class="history-row"><div><strong>${title}</strong><small>${date}</small></div><strong>${escapeHtml(amount)}</strong></div>`;
   }).join('');
 })();

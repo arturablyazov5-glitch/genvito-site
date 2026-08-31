@@ -26,7 +26,7 @@
     renewButton.lastChild.textContent = 'Оплатить подписку';
   }
   if (cancelButton) {
-    cancelButton.hidden = !(active && !trial && data.plan !== 'Бессрочный доступ' && data.autoRenew);
+    cancelButton.hidden = !(active && data.plan !== 'Бессрочный доступ' && data.autoRenew);
     cancelButton.addEventListener('click', async () => {
       cancelButton.disabled = true;
       const response = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/auto-renew`, {
@@ -34,7 +34,7 @@
       });
       if (response.ok) {
         cancelButton.hidden = true;
-        statusElement.textContent = 'Подписка активна до конца периода';
+        statusElement.textContent = trial ? 'Пробный период активен без автопродления' : 'Подписка активна до конца периода';
       } else {
         cancelButton.disabled = false;
         cancelButton.textContent = 'Не удалось отключить. Повторить';

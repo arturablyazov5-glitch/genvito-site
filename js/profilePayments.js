@@ -15,7 +15,7 @@
   const status = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/status?email=${encodeURIComponent(user.email)}`, { headers });
   const data = await status.json().catch(() => ({}));
   const methods = data.paymentMethods || (data.paymentMethodId ? [{ id: data.paymentMethodId, type: data.paymentMethodType, cardLast4: data.cardLast4, isPrimary: true }] : []);
-  const recurringPlans = new Set(['1 месяц', '3 месяца', '6 месяцев', '1 год']);
+  const recurringPlans = new Set(['3 дня', '1 месяц', '3 месяца', '6 месяцев', '1 год']);
   const recurringAvailable = recurringPlans.has(data.plan);
   emptyText.hidden = methods.length > 0;
   list.innerHTML = methods.map((method) => {
@@ -36,7 +36,9 @@
   const syncAutoRenew = (enabled) => {
     toggle.classList.toggle('is-on', enabled);
     toggle.setAttribute('aria-pressed', String(enabled));
-    caption.textContent = enabled ? 'Автоматическое продление включено' : 'Автоматическое продление отключено';
+    caption.textContent = enabled
+      ? data.plan === '3 дня' ? 'После пробного периода спишется 299 ₽ за 1 месяц' : 'Автоматическое продление включено'
+      : data.plan === '3 дня' ? 'Списания после пробного периода не будет' : 'Автоматическое продление отключено';
   };
   syncAutoRenew(Boolean(data.autoRenew));
   if (!recurringAvailable) {

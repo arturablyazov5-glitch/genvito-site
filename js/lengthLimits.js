@@ -170,8 +170,8 @@ function updateLengthCounters(card, districts) {
   if (summaryEl) {
     const overLimit = titleRange.max > AVITO_TITLE_LIMIT || bodyRange.max > AVITO_BODY_LIMIT;
     summaryEl.textContent =
-      `Заголовок: ${formatRange(titleRange)}/${AVITO_TITLE_LIMIT} · ` +
-      `Текст+SEO: ${formatRange(bodyRange)}/${AVITO_BODY_LIMIT}`;
+      `Заголовок ${formatRange(titleRange)} из ${AVITO_TITLE_LIMIT} · ` +
+      `Текст + SEO ${formatRange(bodyRange)} из ${AVITO_BODY_LIMIT}`;
     summaryEl.classList.toggle('length-status-bad', overLimit);
   }
 }

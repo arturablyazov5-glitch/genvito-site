@@ -86,11 +86,11 @@
         <div class="step-title"><span class="step-number">2</span><h3>Способ оплаты</h3></div>
         <div class="payment-methods">
           <button class="card-method payment-method selected" type="button" data-method="card" role="radio" aria-checked="true"><span class="card-preview"><img src="/assets/bank_card.svg" alt=""></span><span class="payment-divider"></span><span class="card-method-copy"><strong>Банковская карта</strong><small>Visa, Mastercard, МИР</small></span><span class="radio-circle checked"></span></button>
-          <div class="sbp-card payment-method" id="payment-method-sbp" data-method="sbp" role="radio" aria-checked="false" tabindex="0"><span class="sbp-logo"><img src="/assets/sbp-full.svg" alt="СБП"></span><span class="payment-divider"></span><span class="payment-method-copy"><strong>СБП</strong><small>Оплата по QR-коду без сохранения способа</small></span><span class="radio-circle"></span></div>
+          <button class="sbp-card payment-method" id="payment-method-sbp" type="button" data-method="sbp" role="radio" aria-checked="false"><span class="sbp-logo"><img src="/assets/sbp-full.svg" alt="СБП"></span><span class="payment-divider"></span><span class="payment-method-copy"><strong>СБП</strong><small>Оплата по QR-коду без сохранения способа</small></span><span class="radio-circle"></span></button>
         </div>
       </section>
       <section class="checkout-total" id="payment-submit-step"><div class="total-row" id="payment-total-row"><span>К оплате</span><div class="total-amount"><strong id="payment-total">299 ₽</strong><small id="payment-benefit" hidden></small></div></div><button class="btn primary checkout-pay-btn" type="submit" id="pay-main-btn">Перейти к оплате <i data-lucide="arrow-right" aria-hidden="true"></i></button><p class="checkout-feedback" id="checkout-feedback" role="status"></p><p class="checkout-legal checkout-consent">Нажимая кнопку, вы соглашаетесь с <a href="/legal/offer" target="_blank" rel="noopener noreferrer">условиями использования сервиса</a> и <a href="/legal/contacts" target="_blank" rel="noopener noreferrer">правовой информацией</a>.</p></section>
-      <p class="checkout-legal checkout-autorenew-note">При оплате платного тарифа способ оплаты сохраняется для автопродления. Отключить его можно в профиле.</p>
+      <p class="checkout-legal checkout-autorenew-note" id="checkout-autorenew-note">При оплате платного тарифа способ оплаты сохраняется для автопродления. Отключить его можно в профиле.</p>
     </form>
   </main></div><script src="/js/icons.js"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
@@ -99,4 +99,4 @@
 <script>window.SUPABASE_CONFIG = {"url":"https://gvqlxjontunsnledozuk.supabase.co","key":"sb_publishable_7GYCCrrDtMbVr4_cTJnEhQ_jmFbgxXi"};</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/js/authHeader.js?v=20260831-1"></script>
-<script src="/js/payment.js?v=20260831-3"></script><script src="https://unpkg.com/lucide"></script><script>lucide.createIcons();</script></body></html>
+<script src="/js/payment.js?v=20260831-4"></script><script src="https://unpkg.com/lucide"></script><script>lucide.createIcons();</script></body></html>

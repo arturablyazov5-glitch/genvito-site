@@ -10,6 +10,7 @@ const paymentForm = document.getElementById('payment-form');
 const feedback = document.getElementById('checkout-feedback');
 const paymentButton = document.getElementById('pay-main-btn');
 const paymentTotalRow = document.getElementById('payment-total-row');
+const autoRenewNote = document.getElementById('checkout-autorenew-note');
 const authClient = window.__supabaseClient || (window.supabase && (window.__supabaseClient = window.supabase.createClient(window.SUPABASE_CONFIG?.url, window.SUPABASE_CONFIG?.key)));
 const { data: sessionData } = await authClient?.auth.getSession() || {};
 const headerEmail = document.getElementById('account-email')?.textContent?.trim() || '';
@@ -91,6 +92,9 @@ function paymentErrorText(error) {
   if (normalized.includes('offer') || normalized.includes('product')) {
     return 'Тариф временно недоступен. Попробуйте позже.';
   }
+  if (normalized.includes('forbidden')) {
+    return 'В магазине ЮKassa не включено сохранение способов оплаты для автопродления.';
+  }
   return 'Не удалось создать ссылку на оплату. Попробуйте ещё раз.';
 }
 
@@ -109,11 +113,15 @@ function updatePaymentSummary(card) {
 function updateTrialUI(card) {
   const isTrial = card?.dataset.plan === '3 дня';
   if (methodStep) methodStep.hidden = isTrial;
+  if (paymentTotalRow) paymentTotalRow.hidden = isTrial;
   if (paymentButton) {
     paymentButton.classList.toggle('is-unavailable', false);
     paymentButton.disabled = false;
     paymentButton.textContent = isTrial ? 'Активировать пробный период' : 'Перейти к оплате';
   }
+  if (autoRenewNote) autoRenewNote.textContent = isTrial
+    ? 'Карта привязывается без списания. Через 3 дня автоматически спишется 299 ₽ за 1 месяц доступа. Автопродление можно отключить или карту можно отвязать в профиле до окончания пробного периода.'
+    : 'При оплате картой способ оплаты сохраняется для автопродления. При оплате через СБП автопродление включится только при наличии ранее сохранённого основного способа. Отключить его можно в профиле.';
 }
 let selectedTariff = null;
 initRadioGroup(tariffs, '.tariff-card', (card) => {
@@ -154,25 +162,29 @@ paymentForm.addEventListener('submit', async (event) => {
       feedback.classList.add('is-error', 'is-visible');
       return;
     }
-    const trialResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/trial`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: trialEmail }) });
-    const trialData = await trialResponse.json().catch(() => ({}));
-    if (!trialResponse.ok) {
-      feedback.textContent = trialData.error === 'trial_already_used' ? 'Пробный период для этого email уже использован.' : 'Не удалось активировать пробный период. Попробуйте ещё раз.';
-      feedback.classList.add('is-error', 'is-visible');
-      return;
+    const oldLabel = paymentButton?.textContent || '';
+    if (paymentButton) { paymentButton.disabled = true; paymentButton.textContent = 'Переходим к привязке карты…'; }
+    try {
+      const trialResponse = await fetch(`${window.SUPABASE_CONFIG.url}/functions/v1/payment-api/trial`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: trialEmail }) });
+      const trialData = await trialResponse.json().catch(() => ({}));
+      if (!trialResponse.ok) {
+        feedback.textContent = trialData.error === 'trial_already_used'
+          ? 'Пробный период для этого email уже использован.'
+          : trialData.error === 'subscription_already_active'
+            ? 'Для этого аккаунта уже действует подписка.'
+            : trialData.error === 'forbidden'
+              ? 'В тестовом магазине не включена привязка карты.'
+              : 'Не удалось перейти к привязке карты. Попробуйте ещё раз.';
+        feedback.classList.add('is-error', 'is-visible');
+        return;
+      }
+      if (trialData.paymentUrl) {
+        sessionStorage.setItem('genvito-pending-payment', JSON.stringify({ checkoutToken: trialData.checkoutToken || '', plan: '3 дня', trial: true }));
+        window.location.href = trialData.paymentUrl;
+      }
+    } finally {
+      if (paymentButton) { paymentButton.disabled = false; paymentButton.textContent = oldLabel; }
     }
-    if (trialData.paymentUrl) {
-      window.location.href = trialData.paymentUrl;
-      return;
-    }
-    feedback.textContent = 'Пробный период активирован на 3 дня.';
-    feedback.classList.remove('is-error');
-    feedback.classList.add('is-visible');
-    paymentButton.disabled = true;
-    paymentButton.textContent = 'Пробный период активирован';
-    setTimeout(() => {
-      window.location.href = signedIn ? '/app/generate' : `/app/login?email=${encodeURIComponent(trialEmail)}`;
-    }, 500);
     return;
   }
 

@@ -49,7 +49,8 @@ function showLogout(element) {
     adminTab.className = 'tab-btn admin-only';
     adminTab.href = '/app/admin/registrations';
     adminTab.id = 'tab-btn-admin';
-    adminTab.textContent = 'Админка';
+    if (location.pathname === '/app/admin/registrations') adminTab.setAttribute('aria-current', 'page');
+    adminTab.innerHTML = icon('layoutDashboard') + 'Админка';
     document.querySelector('.side-tabs')?.append(adminTab);
   }
   const headerLogout = document.getElementById('logout-view-btn');
